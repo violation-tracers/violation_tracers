@@ -6,6 +6,9 @@ __pycache__/
 venv/
 tracersvenv/
 
+# 테스트 이미지와 사용자들이 업로드한 이미지가 올라갈 수 있으므로 media 폴더 무시하기
+media/
+
 # C extensions
 *.so
 
