@@ -19,7 +19,15 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+def home(request):
+    from django.shortcuts import redirect
+    # home 화면 변경 시 수정 [임시]
+    return redirect('accounts:main')
+
 urlpatterns = [
+    # 일단 로그인이 메인화면으로 구성
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('image/',include('detect.urls')),
+    path('accounts/', include('accounts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
