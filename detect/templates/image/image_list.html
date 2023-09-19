@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<div class="container">
+    <div>
+        <h1>Upload image list</h1>
+    </div>
+    <div>
+        {% for image_contents in images_contents_list %}
+        <div class="col">
+            <a href="{% url "detect:image_detail" image_contents.pk %}">
+                <div>
+                    {{image_contents.pk}}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
