@@ -1,13 +1,55 @@
 {% extends "base_tem.html" %}
 {% load bootstrap5 %}
 {% block content %}
-    <img class="w-100" src="/static/img/carousel-1.jpg" alt="Image">
-    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-        <div class="p-3" style="max-width: 900px;">
-            <h5 class="text-white text-uppercase animated bounceInDown">Best Security Services</h5>
-            <h1 class="display-1 text-white mb-md-4 animated zoomIn">Safe & Secure Home For Your Family</h1>
-            <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
-            <a href="" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Image Shoot</a>
+{% comment %} Main {% endcomment %}
+<div class="container-fluid p-0 mb-5 mt-5">
+    <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="w-100" src="/static/img/carousel-1.jpg" alt="Image">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                    <div class="p-3" style="max-width: 900px;">
+                        <h5 class="text-white text-uppercase animated bounceInDown">Best Security Services</h5>
+                        <h1 class="display-1 text-white mb-md-4 animated zoomIn">Safe & Secure Home For Your Family</h1>
+                        {% if user.is_authenticated %}
+                            {% for group in user.groups.all %}
+                                {% if group.name == 'reporter' %}
+                                    <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
+                                    <a href="" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
+                                    <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
+                                {% elif group.name == 'admin'%}
+                                    <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Result List</a>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
+                            <a href="" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
+                            <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+{% comment %} About {% endcomment %}
+<div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="row gx-5">
+            <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
+                <div class="position-relative h-100">
+                    <img class="position-absolute w-100 h-100 rounded wow zoomIn" data-wow-delay="0.3s" src="/static/img/example_1.jpg" style="object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="mb-4">
+                    <h5 class="text-primary text-uppercase" style="letter-spacing: 5px;">How To</h5>
+                </div>
+                <h4 class="text-body fst-italic mb-4">사용법 작성</h4>
+                <p class="mb-4">주의사항 작성</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
 {% endblock %}
