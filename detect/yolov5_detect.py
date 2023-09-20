@@ -26,11 +26,12 @@ def y_detect(image, image_path):
     # media/inferenced_image 폴더가 없으면 생성
     if not os.path.exists(inferenced_image_path):
         os.makedirs(inferenced_image_path)
-    
+
     # array형태를 이미지로 변환해서 저장
     for img in result.ims:
         img_base64 = Image.fromarray(img)
-        img_base64.save(f"{inferenced_image_path}/{image_path}")
+        # 이미지 저장
+        img_base64.save(inferenced_image_path + '/' + image_path)
     
     # 디텍팅된 이미지 경로 반환
     result_url = "inferenced_image/" + image_path

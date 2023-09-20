@@ -5,14 +5,8 @@
 <br>
 
 <div class="container">
-    <div>
-        <h1>Upload image Detail</h1>
-    </div>
-    <div>
-        <div class="col">
-            {{ image_contents.pk}}s
-        </div>
-    </div>
+    <h1>view_image</h1>
+    <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}">
 </div>
 
 {% endblock content %}
