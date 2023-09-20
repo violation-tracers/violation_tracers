@@ -26,6 +26,9 @@ def y_detect(image, image_path):
     # media/inferenced_image 폴더가 없으면 생성
     if not os.path.exists(inferenced_image_path):
         os.makedirs(inferenced_image_path)
+    
+    if not os.path.exists(inferenced_image_path + '/images'):
+        os.makedirs(inferenced_image_path + '/images')
 
     # array형태를 이미지로 변환해서 저장
     for img in result.ims:

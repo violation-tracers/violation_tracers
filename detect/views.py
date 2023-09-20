@@ -36,7 +36,7 @@ def upload_image(request):
         form = ImageContentsForm(request.POST, request.FILES)   
         if form.is_valid():
             image = form.save(commit=False)
-            image.user = request.user
+            image.upload_user = request.user
             image.save()
             # to detect image after save
             detecting(image.image)
