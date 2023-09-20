@@ -5,6 +5,16 @@
 
     <h1>위반 여부 확인</h1>
     <div class='container'>
-        <img src="/media/imges/{{image_contents.image}}" alt="업로드된 이미지">
+        <img src="/media/inferenced_image/{{image_contents.image}}" alt="업로드되어 디텍팅된 이미지">
+        <br>
+        {% comment %} 이미지 확인 결과에 따라 1, 2를 유저가 선택하도록 {% endcomment %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="radio" name="check_status" value="1">위반
+            <input type="radio" name="check_status" value="2">보류
+            <br>
+            <textarea name="check_comment" rows="4" cols="15" placeholder="ex. 보류 사유"></textarea>
+            <input type="submit" value="확인">
+        </form>
     </div>
 {% endblock content %}

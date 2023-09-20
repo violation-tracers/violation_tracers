@@ -15,6 +15,8 @@ urlpatterns = [
     path('list/', views.image_contents_list, name='image_list'),
     # 이미지 디테일
     path('image_detail/<uuid:uuid>/', views.image_detail, name='image_detail'),
+    # 이미지 체킹
+    path('check/<uuid:uuid>/', views.check_image, name='check_image'),
 
     # # detecting 후에 result list page를 반환하고, id를 이용해서 해당 image 만 반환
     # path('detail/{int:image_id}/', views.image_detail, name="image_detail"),

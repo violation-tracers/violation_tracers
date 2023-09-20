@@ -70,23 +70,30 @@ def image_detail(request, uuid):
 # checking을 하면, check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
 # checking을 하면, check_comment를 남길 수 있어야 합니다.
 # checking을 하면, check_date가 현재 시간으로 바뀌어야 합니다.
-def image_check(request, uuid):
+def check_image(request, uuid):
+    
+    # uuid to string and replace '-' to ''
+    target_uuid = str(uuid).replace('-', '')
+
     if request.user.is_superuser:
-        image = get_object_or_404(ImageContents, image_uuid=uuid)
+        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
+        # 이미지 체크
         if request.method == 'POST':
             # check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
-            image.check_status = 1
-            image.check_user = request.user
+            target_image.check_status = request.POST['check_status']
+            target_image.check_user = request.user
             # check_comment를 남길 수 있어야 합니다.
             if request.POST['check_comment']:
-                image.check_comment = request.POST['check_comment']
+                target_image.check_comment = request.POST['check_comment']
             # check_date가 현재 시간으로 바뀌어야 합니다.
             # image.check_date = timezone.now()
-            image.save()
+            target_image.save()
             return redirect('image:image_detail', uuid=uuid)
+        # 이미지 상세보기
         else:
-            return render(request, 'image/image_detail.html', {'image_contents': image})
+            return render(request, 'image/check_violation.html', {'image_contents': target_image})
     else:
+        # 관리자가 아니라면 home으로 이동
         return redirect('accounts:main')
 
 # 촬영해서 업로드하는 페이지
