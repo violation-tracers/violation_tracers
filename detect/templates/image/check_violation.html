@@ -8,6 +8,7 @@
         <img src="/media/inferenced_image/{{image_contents.image}}" alt="업로드되어 디텍팅된 이미지">
         <br>
         {% comment %} 이미지 확인 결과에 따라 1, 2를 유저가 선택하도록 {% endcomment %}
+        {% comment %} 이미 check_status가 있다면 미리 해당 값을 채워넣어놓기 {% endcomment %}
         <form method="POST">
             {% csrf_token %}
             <input type="radio" name="check_status" value="1">위반
