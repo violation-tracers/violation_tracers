@@ -10,11 +10,12 @@ from . forms import CustomUserCreationForm
 
 # Create your views here.
 
+# setting.py User 가져오기
 User = get_user_model()
 
 def main(request):
 
-    return render(request, 'accounts/ex_home.html')
+    return render(request, 'accounts/main.html')
 
 @require_http_methods(['GET', 'POST'])
 def signup(request):
