@@ -9,9 +9,17 @@ def y_detect(image, image_path):
 
     # 어떤모델을 쓸 것인지.
     # 기본 제공되는 yolov5s 모델 사용
-    model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+    # model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     # custom 모델 사용
-    # model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='result19_best.pt')
+
+    model.conf = 0.4 # NMS confidence threshold
+    # iou = 0.45  # NMS IoU threshold
+    # agnostic = False  # NMS class-agnostic
+    # multi_label = False  # NMS multiple labels per box
+    # classes = None  # (optional list) filter by class, i.e. = [0, 15, 16] for COCO persons, cats and dogs
+    # max_det = 1000  # maximum number of detections per image
+    # amp = False  # Automatic Mixed Precision (AMP) inference
 
     # 이미지 사이즈를 변경하면서 모델을 이용해 디텍팅
     result = model(image, size=416)
