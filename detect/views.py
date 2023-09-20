@@ -4,35 +4,64 @@ from django.core.files.storage import FileSystemStorage
 import uuid
 import os
 from . import yolov5_detect
+from .models import ImageContents
+import base64
+from django.http import HttpResponseRedirect, JsonResponse
+import json
+from django.shortcuts import redirect
+from .forms import ImageContentsForm
+from django.shortcuts import get_object_or_404
 
-# 이미지 파일 업로드 페이지
-def index(request):
-    return render(request, 'detect/img_up_res.html')
-
-# 이미지 파일 이름 변경 메서드
-def rename_imagefile_to_uuid(imagefile_name):
-    ext = imagefile_name.split('.')[-1]
-    imagefile_name = "%s.%s" % (uuid.uuid4(), ext)
-    return imagefile_name
-
-# 이미지 파일에서 객체 인식
-def detect(request):
-    # 업로드된 image
-    detecting_image = request.FILES.get('images')
-    fs = FileSystemStorage()
-
-    # 디텍팅할 이미지 파일 이름 변경
-    detecting_image_filename = rename_imagefile_to_uuid(detecting_image.name)
-
-    # 디텍팅할 이미지 파일 저장. 저장된 경로 반환
-    detecting_image_path = fs.save(detecting_image_filename, detecting_image)
-
-    # 이제 디텍팅할 이미지
-    target_image = 'media/' + detecting_image_path
+def detecting(target_image):
+    # 이미지파일을 받아왔으니, 이미지경로를 str로 변환
+    # 변환된 주소와 이미지를 yolov5_detect.py로 보내서 디텍팅
+    # 디텍팅할 이미지
+    target_image_path = str(target_image)
+    target_image = 'media/' + target_image_path
 
     # 디텍팅할 이미지를 디텍팅 메서드로 보내고,
     # 디텍팅된 이미지의 경로를 반환
-    result_img_path = yolov5_detect.y_detect(target_image, detecting_image_path)
+    result_img_path = yolov5_detect.y_detect(target_image, target_image_path)
 
     # 디텍팅된 이미지를 보여주는 페이지로 이동
-    return render(request, 'detect/result.html', {'image': result_img_path})
+    return result_img_path
+
+# image 업로드
+def upload_image(request):
+    if request.method == 'POST':
+        form = ImageContentsForm(request.POST, request.FILES)   
+        if form.is_valid():
+            image = form.save(commit=False)
+            image.user = request.user
+            image.save()
+            # to detect image after save
+            detecting(image.image)
+
+            # return redirect('image_list')
+            return render(request, 'image/image_detail.html', {'image_contents': image})
+    else:
+        form = ImageContentsForm()
+    return render(request, 'image/upload_image.html', {'form': form})
+
+# 이미지 리스트
+def image_contents_list(request):
+    if request.user.is_superuser:
+        target_images = ImageContents.objects.all()
+    else:
+        target_images = ImageContents.objects.filter(upload_user=request.user)
+    
+    return render(request, 'image/image_list.html', {'image_contents_list': target_images})
+
+# 이미지 상세보기
+def image_detail(request, uuid):
+    # uuid to string and replace '-' to ''
+    uuid = str(uuid).replace('-', '')
+    image = get_object_or_404(ImageContents, image_uuid=uuid)
+    
+    return render(request, 'image/image_detail.html', {'image_contents': image})
+
+
+# 촬영해서 업로드하는 페이지
+
+
+# video streaming 중 실시간 detecting

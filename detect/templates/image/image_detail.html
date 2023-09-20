@@ -1,0 +1,12 @@
+{% extends "base_tem.html" %}
+
+{% block content %}
+
+<br>
+
+<div class="container">
+    <h1>view_image</h1>
+    <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}">
+</div>
+
+{% endblock content %}

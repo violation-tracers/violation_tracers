@@ -10,6 +10,7 @@ from . forms import CustomUserCreationForm
 
 # Create your views here.
 
+# setting.py User 가져오기
 User = get_user_model()
 
 def main(request):
