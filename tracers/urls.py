@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from detect import views
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -29,6 +28,6 @@ urlpatterns = [
     # 일단 로그인이 메인화면으로 구성
     path('', home, name='home'),
     path('admin/', admin.site.urls),
+    path('image/',include('detect.urls')),
     path('accounts/', include('accounts.urls')),
-    path('detect/', views.detect, name="detect"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
