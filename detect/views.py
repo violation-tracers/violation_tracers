@@ -38,8 +38,10 @@ def upload_image(request):
             image = form.save(commit=False)
             image.upload_user = request.user
             image.save()
+            result = detecting(image.image)
+            image.detect_result = result[1]
+            image.save()
             # to detect image after save
-            detecting(image.image)
 
             # return redirect('image_list')
             return render(request, 'image/image_detail.html', {'image_contents': image})
@@ -64,6 +66,28 @@ def image_detail(request, uuid):
     
     return render(request, 'image/image_detail.html', {'image_contents': image})
 
+# admin은 imagecontents를 확인해서 checking 을 할 수 있어야합니다.
+# checking을 하면, check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
+# checking을 하면, check_comment를 남길 수 있어야 합니다.
+# checking을 하면, check_date가 현재 시간으로 바뀌어야 합니다.
+def image_check(request, uuid):
+    if request.user.is_superuser:
+        image = get_object_or_404(ImageContents, image_uuid=uuid)
+        if request.method == 'POST':
+            # check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
+            image.check_status = 1
+            image.check_user = request.user
+            # check_comment를 남길 수 있어야 합니다.
+            if request.POST['check_comment']:
+                image.check_comment = request.POST['check_comment']
+            # check_date가 현재 시간으로 바뀌어야 합니다.
+            # image.check_date = timezone.now()
+            image.save()
+            return redirect('image:image_detail', uuid=uuid)
+        else:
+            return render(request, 'image/image_detail.html', {'image_contents': image})
+    else:
+        return redirect('accounts:main')
 
 # 촬영해서 업로드하는 페이지
 
