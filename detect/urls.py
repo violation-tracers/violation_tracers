@@ -3,6 +3,8 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
+app_name = 'image'
+
 urlpatterns = [
     # 촬영해놓았던 이미지를 업로드해서 디텍팅
     # path('detect/', views.detect, name="detect"),

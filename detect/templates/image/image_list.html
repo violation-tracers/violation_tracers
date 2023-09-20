@@ -13,7 +13,7 @@
         {% for image_contents in image_contents_list %}
         <div class="col">
             {% comment %} <a href="{% url "detect:image_detail" image_contents.pk %}"> {% endcomment %}
-            <a href="{% url "image_detail" image_contents.image_uuid %}">
+            <a href="{% url "image:image_detail" image_contents.image_uuid %}">
                 <div>
                     {{image_contents.pk}}
                     {{image_contents.image_uuid}}
