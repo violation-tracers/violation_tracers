@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
+import uuid
 
 # Create your models here.
-class Image_contents(models.Model):
+class ImageContents(models.Model):
+    image = models.ImageField(upload_to='images/')
     # 컨텐츠에 포함된 image의 uuid
-    image_uuid = models.CharField(max_length=100)
+    image_uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     # 생성날짜
     create_at = models.DateTimeField(auto_now_add=True)
     # 이미지 업로드 유저 - 유저가 삭제되어도 이미지는 남아있어야 하므로, on_delete=models.SET_NULL
