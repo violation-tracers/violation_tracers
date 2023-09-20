@@ -14,7 +14,7 @@ User = get_user_model()
 
 def main(request):
 
-    return render(request, 'accounts/ex_home.html')
+    return render(request, 'accounts/main.html')
 
 @require_http_methods(['GET', 'POST'])
 def signup(request):
