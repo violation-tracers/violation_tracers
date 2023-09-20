@@ -27,7 +27,11 @@ def detecting(target_image):
     return result_img_path
 
 # image 업로드
+# 로그인을 해야 함. 로그인되어있지 않으면 home으로 이동.
+# 로그인이 되어있으면 image 업로드 페이지로 이동.
 def upload_image(request):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
     if request.method == 'POST':
         form = ImageContentsForm(request.POST, request.FILES)   
         if form.is_valid():
