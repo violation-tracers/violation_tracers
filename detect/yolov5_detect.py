@@ -24,6 +24,10 @@ def y_detect(image, image_path):
     # 이미지 사이즈를 변경하면서 모델을 이용해 디텍팅
     result = model(image, size=416)
 
+    # 디텍팅된 이미지의 라벨중 마지막 name 만 반환
+    result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    # print(result_detecting_list)
+
     # numpy array로 변환
     result.render()
 
@@ -46,4 +50,4 @@ def y_detect(image, image_path):
     
     # 디텍팅된 이미지 경로 반환
     result_url = "inferenced_image/" + image_path
-    return result_url
+    return (result_url, result_detecting_list)
