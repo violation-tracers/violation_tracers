@@ -14,6 +14,8 @@ urlpatterns = [
     path('image_detail/<uuid:uuid>/', views.image_detail, name='image_detail'),
     # 이미지 체크
     path('check/<uuid:uuid>/', views.check_image, name='check_image'),
+    # 이미지 통과
+    path('pass/<uuid:uuid>/', views.collect_image, name='pass_image'),
     # 촬영해서 업로드하고 디텍팅
     path('capture/', views.capture, name="capture"),
 ]
