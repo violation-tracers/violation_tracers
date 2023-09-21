@@ -1,4 +1,4 @@
-{% extends "base_tem.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -17,20 +17,24 @@
     확인 상태:
     {% if image_contents.check_status == 0 %}
     미확인 ❌
-    <div class='go_checking'>
-        <button>
-            <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
-        </button>
-    <div>
+        {% if user.is_superuser %}
+            <div class='go_checking'>
+                <button>
+                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
+                </button>
+            <div>
+        {% endif %}
     {% elif image_contents.check_status == 1 %}
     확인 ✅
     {% else %}
     보류 🟠
-    <div class='go_checking'>
-        <button>
-            <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
-        </button>
-    <div>
+        {% if user.is_superuser %}
+            <div class='go_checking'>
+                <button>
+                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
+                </button>
+            <div>
+        {% endif %}
     {% endif %}
     <br>
     {% if image_contents.check_user %}
