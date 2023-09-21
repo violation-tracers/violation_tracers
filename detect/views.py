@@ -64,7 +64,8 @@ def image_contents_list(request):
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     
-    if request.user.is_superuser:
+    # if request.user.is_superuser:
+    if not request.user.groups.filter(name='reporter').exists():
         target_images = ImageContents.objects.all()
     
     # 일반 유저는 자신의 이미지만 볼 수 있음
@@ -91,7 +92,8 @@ def check_image(request, uuid):
     target_uuid = str(uuid).replace('-', '')
 
     # superuser인지 확인
-    if request.user.is_superuser:
+    # if request.user.is_superuser:
+    if not request.user.groups.filter(name='reporter').exists():
         target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
         # 이미지 체크
         if request.method == 'POST':
@@ -110,6 +112,22 @@ def check_image(request, uuid):
             return render(request, 'image/check_violation.html', {'image_contents': target_image})
     else:
         # 관리자가 아니라면 home으로 이동
+        return redirect('accounts:main')
+
+# 이미지 확인. 통과. pass
+def collect_image(request, uuid):
+    target_uuid = str(uuid).replace('-', '')
+
+    if not request.user.groups.filter(name='reporter').exists():
+        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
+        if target_image.check_status != 1:
+            target_image.check_status = 1
+            target_image.check_user = request.user
+            target_image.check_comment = '통과'
+            target_image.check_date = datetime.datetime.now()
+            target_image.save()
+            return redirect('image:image_detail', uuid=uuid)
+    else:
         return redirect('accounts:main')
 
 # 촬영해서 업로드하는 페이지
