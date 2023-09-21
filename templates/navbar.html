@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm py-3 py-lg-0 px-3 px-lg-0">
     <a href="{% url "accounts:main" %}" class="navbar-brand ms-lg-5">
-        <h1 class="display-5 m-0 text-secondary">Chasers</h1>
+        <h1 class="display-5 m-0 text-primary">Tracers</h1>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -11,27 +11,29 @@
             <a href="#scrollspyHeading1" class="nav-itme nav-link">How To</a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Service</a>
-                {% if user.is_authenticated %}
-                    {% for group in user.groups.all %}
-                        {% if group.name == 'reporter' %}
-                            <div class="dropdown-menu m-0">
+                <div class="dropdown-menu m-0">
+                    {% if user.is_authenticated %}
+                        {% for group in user.groups.all %}
+                            {% if group.name == 'admin' %}
+                                <a href="{% url "image:image_list" %}" class="dropdown-item">Result List</a>
+                            {% else %}
                                 <a href="{% url "image:upload_image" %}" class="dropdown-item">Image Upload</a>
                                 <a href="{% url "image:capture" %}" class="dropdown-item">Image Shoot</a>
                                 <a href="{% url "image:image_list" %}" class="dropdown-item">Image List</a>
-                            </div>
-                        {% elif group.name == 'admin' %}
-                            <div class="dropdown-menu m-0">
-                                <a href="{% url "image:image_list" %}" class="dropdown-item">Result List</a>
-                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if user.is_superuser == 1 %}
+                            <a href="{% url "image:upload_image" %}" class="dropdown-item">Image Upload</a>
+                            <a href="{% url "image:capture" %}" class="dropdown-item">Image Shoot</a>
+                            <a href="{% url "image:image_list" %}" class="dropdown-item">Image List</a>
+                            <a href="{% url "image:image_list" %}" class="dropdown-item">Result List</a>
                         {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <div class="dropdown-menu m-0">
+                    {% else %}
                         <a href="{% url "image:upload_image" %}" class="dropdown-item">Image Upload</a>
                         <a href="{% url "image:capture" %}" class="dropdown-item">Image Shoot</a>
                         <a href="{% url "image:image_list" %}" class="dropdown-item">Image List</a>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
             {% if user.is_authenticated %}
                 <a href="{% url "accounts:logout" %}" class="nav-item nav-link">Logout</a>

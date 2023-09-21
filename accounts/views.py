@@ -25,8 +25,8 @@ def signup(request):
         signup_form = CustomUserCreationForm(request.POST)
         if signup_form.is_valid():
             user = signup_form.save()
-            group = Group.objects.get(name='reporter')
-            user.groups.add(group)
+            # group = Group.objects.get(name='reporter')
+            # user.groups.add(group)
             auth_login(request, user)
             return redirect('home')
         
