@@ -50,7 +50,7 @@ def upload_image(request):
             image.save()
 
             # 이미지와 함께 이미지 상세보기 페이지로 이동
-            return render(request, 'image/image_detail.html', {'image_contents': image})
+            return redirect('image:image_detail', uuid=image.image_uuid)
     
     # 이미지 업로드 페이지
     else:
