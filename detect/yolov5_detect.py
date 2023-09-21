@@ -9,12 +9,24 @@ def y_detect(image, image_path):
 
     # 어떤모델을 쓸 것인지.
     # 기본 제공되는 yolov5s 모델 사용
-    model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+    # model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     # custom 모델 사용
-    # model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results19.pt')
+
+    model.conf = 0.4 # NMS confidence threshold
+    # iou = 0.45  # NMS IoU threshold
+    # agnostic = False  # NMS class-agnostic
+    # multi_label = False  # NMS multiple labels per box
+    # classes = None  # (optional list) filter by class, i.e. = [0, 15, 16] for COCO persons, cats and dogs
+    # max_det = 1000  # maximum number of detections per image
+    # amp = False  # Automatic Mixed Precision (AMP) inference
 
     # 이미지 사이즈를 변경하면서 모델을 이용해 디텍팅
     result = model(image, size=416)
+
+    # 디텍팅된 이미지의 라벨중 마지막 name 만 반환
+    result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    # print(result_detecting_list)
 
     # numpy array로 변환
     result.render()
@@ -26,6 +38,9 @@ def y_detect(image, image_path):
     # media/inferenced_image 폴더가 없으면 생성
     if not os.path.exists(inferenced_image_path):
         os.makedirs(inferenced_image_path)
+    
+    if not os.path.exists(inferenced_image_path + '/images'):
+        os.makedirs(inferenced_image_path + '/images')
 
     # array형태를 이미지로 변환해서 저장
     for img in result.ims:
@@ -35,4 +50,4 @@ def y_detect(image, image_path):
     
     # 디텍팅된 이미지 경로 반환
     result_url = "inferenced_image/" + image_path
-    return result_url
+    return (result_url, result_detecting_list)
