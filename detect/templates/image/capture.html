@@ -1,15 +1,54 @@
 {% extends 'base_tem.html' %}
 
 {% block content %}
-
-<br>
-<div class='container'>
-    <h1>Capture Image</h1>
-    <form method="post" enctype="multipart/form-data"> <!-- Set enctype for file uploads -->
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-
-</div>
+<h1>Camera Capture</h1>
+<video id="video" autoplay></video>
+<button id="capture">Capture Photo</button>
+<canvas id="canvas" style="display: none;"></canvas>
+<button>
+    
+<script>
+    const video = document.getElementById('video');
+    const captureButton = document.getElementById('capture');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Initialize the user's camera
+    async function initCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+        } catch (error) {
+            console.error('Error accessing the camera:', error);
+        }
+    }
+    
+    // Capture a photo from the video feed
+    function capturePhoto() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const image = canvas.toDataURL('images'); // Convert canvas to base64
+        
+        // Send the image to the server (you can use fetch or an AJAX request)
+        fetch('/image/capture/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({ image: image })
+        })
+        .then(response => response.json())
+        .then(res =>{
+            // res.image 를 주소로 이동.
+            window.location.href = "/image/image_detail/" + res.image + "/";
+        })
+    }
+    
+    // Initialize camera when the page loads
+    window.addEventListener('load', initCamera);
+    
+    captureButton.addEventListener('click', capturePhoto);
+</script>
 {% endblock %}

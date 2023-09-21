@@ -33,7 +33,7 @@ def upload_image(request):
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     if request.method == 'POST':
-        form = ImageContentsForm(request.POST, request.FILES)   
+        form = ImageContentsForm(request.POST, request.FILES)
         if form.is_valid():
             image = form.save(commit=False)
             image.upload_user = request.user
@@ -95,8 +95,43 @@ def check_image(request, uuid):
     else:
         # 관리자가 아니라면 home으로 이동
         return redirect('accounts:main')
+    
+import datetime
 
 # 촬영해서 업로드하는 페이지
+def capture(request):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
 
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        # client json으로 보내주는 이름에 맞춰서 받아옴
+        image_data = data.get('image')
+
+        if image_data:
+            image_data = image_data.replace('data:image/png;base64,', '')
+            image_data = base64.b64decode(image_data)
+
+            # image name은 저장되는 날짜를 이름으로 함
+            image_name = str(datetime.datetime.now().strftime("%Y%m%d%H%M%S")) + '.jpg'
+            
+            with open(f'media/images/{image_name}', 'wb') as f:
+                f.write(image_data)
+
+            # image vaild 검토 후 저장
+            image = ImageContents()
+            # image = image.save(commit=False)
+            image.image = f'images/{image_name}'
+            image.upload_user = request.user
+            image.save()
+            result = detecting(image.image)
+            image.detect_result = result[1]
+            image.save()
+
+            return JsonResponse({"image":image.image_uuid})
+    else:
+        form = ImageContentsForm()
+    return render(request, 'image/capture.html', {'form': form})
 
 # video streaming 중 실시간 detecting

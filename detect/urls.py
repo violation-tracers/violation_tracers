@@ -21,5 +21,5 @@ urlpatterns = [
     # # detecting 후에 result list page를 반환하고, id를 이용해서 해당 image 만 반환
     # path('detail/{int:image_id}/', views.image_detail, name="image_detail"),
     # # 촬영해서 업로드하고 디텍팅
-    # path('capture/', views.capture, name="capture"),
+    path('capture/', views.capture, name="capture"),
 ]
