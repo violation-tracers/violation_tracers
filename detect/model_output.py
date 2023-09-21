@@ -1,7 +1,7 @@
 def chaser(model_result):
     # db에서 나올 때 str로 나오기 때문에 list로 변환합니다.
     model_result = eval(model_result)
-
+    
     answer = []
     if 0 in model_result or 3 in model_result:
         if 5 in model_result:

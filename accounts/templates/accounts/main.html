@@ -16,16 +16,16 @@
                             {% for group in user.groups.all %}
                                 {% if group.name == 'reporter' %}
                                     <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
-                                    <a href="" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
-                                    <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
+                                    <a href="{% url "image:capture" %}" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
+                                    <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
                                 {% elif group.name == 'admin'%}
-                                    <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Result List</a>
+                                    <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Result List</a>
                                 {% endif %}
                             {% endfor %}
                         {% else %}
                             <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
-                            <a href="" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
-                            <a href="" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
+                            <a href="{% url "image:capture" %}" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
+                            <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
                         {% endif %}
                     </div>
                 </div>

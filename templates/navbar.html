@@ -15,19 +15,21 @@
                     {% for group in user.groups.all %}
                         {% if group.name == 'reporter' %}
                             <div class="dropdown-menu m-0">
-                                <a href="#" class="dropdown-item">Reporter</a>
-                                <a href="#" class="dropdown-item">Imaget List</a>
+                                <a href="{% url "image:upload_image" %}" class="dropdown-item">Image Upload</a>
+                                <a href="{% url "image:capture" %}" class="dropdown-item">Image Shoot</a>
+                                <a href="{% url "image:image_list" %}" class="dropdown-item">Image List</a>
                             </div>
                         {% elif group.name == 'admin' %}
                             <div class="dropdown-menu m-0">
-                                <a href="#" class="dropdown-item">Result List</a>
+                                <a href="{% url "image:image_list" %}" class="dropdown-item">Result List</a>
                             </div>
                         {% endif %}
                     {% endfor %}
                 {% else %}
                     <div class="dropdown-menu m-0">
-                        <a href="#" class="dropdown-item">Reporter</a>
-                        <a href="#" class="dropdown-item">Image List</a>
+                        <a href="{% url "image:upload_image" %}" class="dropdown-item">Image Upload</a>
+                        <a href="{% url "image:capture" %}" class="dropdown-item">Image Shoot</a>
+                        <a href="{% url "image:image_list" %}" class="dropdown-item">Image List</a>
                     </div>
                 {% endif %}
             </div>
