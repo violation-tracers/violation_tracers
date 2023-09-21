@@ -25,7 +25,8 @@ def y_detect(image, image_path):
     result = model(image, size=416)
 
     # 디텍팅된 이미지의 라벨중 마지막 name 만 반환
-    result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    # result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    result_detecting_list = list(map(int, result.pandas().xyxy[0]['name']))
     # print(result_detecting_list)
 
     # numpy array로 변환
