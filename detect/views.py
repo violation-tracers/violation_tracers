@@ -60,6 +60,10 @@ def upload_image(request):
 # 이미지 리스트
 def image_contents_list(request):
     # 관리자는 모든 이미지를 볼 수 있음
+
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+    
     if request.user.is_superuser:
         target_images = ImageContents.objects.all()
     
@@ -74,7 +78,6 @@ def image_detail(request, uuid):
     # uuid to string and replace '-' to ''
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
-
     violation_status = model_output.chaser(image.detect_result)
     return render(request, 'image/image_detail.html', {
         'image_contents': image,
