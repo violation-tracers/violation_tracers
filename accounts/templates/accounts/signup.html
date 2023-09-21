@@ -1,15 +1,40 @@
-{% extends "base_tem.html" %}
+{% extends "base.html" %}
 {% load bootstrap5 %}
 {% block content %}
 
-<h2>회원가입</h2>
-<hr>
-<form method="POST">
-    {% csrf_token %}
-    {% bootstrap_form signup_form %}
-    <div>
-        <button>회원가입</button>
-    </div>
-</form>
-
+<div class='d-flex justify-content-center' style="margin-top : 2rem;">
+    <h2>Sign Up</h2>
+</div>
+<div style='margin-bottom: 5rem; padding-left: 20rem; padding-right: 20rem;'>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="id_username">아이디</label>
+            <input type="text" name="username" maxlength="150" minlength="2" class="form-control" placeholder="Username" id="id_username">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_name">이름</label>
+            <input type="text" name="name" maxlength="20" minlength="2" class="form-control" placeholder="Name" id="id_name">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_password1">비밀번호</label>
+            <input type="password" name="password1" autocomplete="new-password" class="form-control" placeholder="Password" required="" id="id_password1">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_password2">비밀번호</label>
+            <input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Password confirmation" id="id_password2">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_phone">연락처</label>
+            <input type="text" name="phone" placeholder="010-1234-5678" maxlength="20" minlength="12" class="form-control" title="" required="" id="id_phone">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_email">이메일</label>
+            <input type="email" name="email" maxlength="254" class="form-control" placeholder="Email address" title="" id="id_email">
+        </div>
+        <div>
+            <button class="btn btn-outline-dark">Register</button>
+        </div>
+    </form>
+</div>
 {% endblock content %}

@@ -4,6 +4,7 @@
     --secondary: #F14D5D;
     --light: #ECF4FF;
     --dark: #120F2D;
+    --warning: #ffC107;
 }
 
 [class^=flaticon-]:before,
@@ -41,7 +42,9 @@ h6,
 .btn-primary,
 .btn-secondary,
 .btn-primary:hover,
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-warning,
+.btn-warning:hover {
     color: #FFFFFF;
 }
 
@@ -51,6 +54,11 @@ h6,
 }
 
 .btn-secondary:hover {
+    background: var(--warning);
+    border-color: var(--warning);
+}
+
+.btn-warning:hover {
     background: var(--primary);
     border-color: var(--primary);
 }
