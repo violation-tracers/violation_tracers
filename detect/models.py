@@ -7,7 +7,7 @@ class ImageContents(models.Model):
     image = models.ImageField(upload_to='images/')
     # 컨텐츠에 포함된 image의 uuid
     image_uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    # 생성날짜
+    # 이미지 업로드 날짜
     create_at = models.DateTimeField(auto_now_add=True)
     # 이미지 업로드 유저 - 유저가 삭제되어도 이미지는 남아있어야 하므로, on_delete=models.SET_NULL
     upload_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='image_contents', null=True)
@@ -21,3 +21,5 @@ class ImageContents(models.Model):
     check_comment = models.TextField(blank=True)
     # 이미지 디텍팅 결과(ex. [0, 11, 8, 7, 11])
     detect_result = models.TextField(blank=True)
+    # 이미지 확인 날짜
+    check_date = models.DateTimeField(blank=True)
