@@ -11,7 +11,8 @@ import json
 from django.shortcuts import redirect
 from .forms import ImageContentsForm
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
+from . import model_output
+import datetime
 
 # 이미지 디텍팅 메서드
 # 이미지파일을 받아왔으니, 이미지경로를 str로 변환
@@ -25,7 +26,6 @@ def detecting(target_image):
     # 디텍팅할 이미지를 yolov5_detect.py의 디텍팅 메서드로 보내고,
     # 디텍팅된 이미지의 경로와 디텍팅된 클래스 리스트를 반환
     result_url, result_detecting_list = yolov5_detect.y_detect(target_image, target_image_path)
-
     return (result_url, result_detecting_list)
 
 # image 업로드
@@ -74,8 +74,12 @@ def image_detail(request, uuid):
     # uuid to string and replace '-' to ''
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
-    
-    return render(request, 'image/image_detail.html', {'image_contents': image})
+
+    violation_status = model_output.chaser(image.detect_result)
+    return render(request, 'image/image_detail.html', {
+        'image_contents': image,
+        'violation_status': violation_status
+    })
 
 # 이미지 확인 기능. 관리자만 가능
 def check_image(request, uuid):
@@ -95,7 +99,7 @@ def check_image(request, uuid):
             if request.POST['check_comment']:
                 target_image.check_comment = request.POST['check_comment']
             # check_date가 현재 시간으로 바뀌어야 합니다.
-            target_image.check_date = timezone.now()
+            target_image.check_date = datetime.datetime.now()
             target_image.save()
             return redirect('image:image_detail', uuid=uuid)
         # 이미지 상세보기
@@ -104,8 +108,6 @@ def check_image(request, uuid):
     else:
         # 관리자가 아니라면 home으로 이동
         return redirect('accounts:main')
-    
-import datetime
 
 # 촬영해서 업로드하는 페이지
 def capture(request):

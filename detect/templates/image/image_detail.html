@@ -12,7 +12,13 @@
     <br>
     업로드 날짜: {{ image_contents.create_at }}
     <br>
-    기타 사항: {{ image_contents.upload_comment }}   
+    기타 사항: {{ image_contents.upload_comment }}
+    <br>
+    예측한 위반 사항:
+    {% for status in violation_status %}
+        <li>{{status}}</li>
+    {% endfor %}
+
     <br>
     확인 상태:
     {% if image_contents.check_status == 0 %}
@@ -44,7 +50,7 @@
         <br>
         확인 코멘트: {{ image_contents.check_comment }}
     {% endif %}
-
+    
 </div>
 
 {% endblock content %}
