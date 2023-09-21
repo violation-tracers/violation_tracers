@@ -22,4 +22,4 @@ class ImageContents(models.Model):
     # 이미지 디텍팅 결과(ex. [0, 11, 8, 7, 11])
     detect_result = models.TextField(blank=True)
     # 이미지 확인 날짜
-    check_date = models.DateTimeField(blank=True)
+    check_date = models.DateTimeField(blank=True, null=True)
