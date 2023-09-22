@@ -3,27 +3,84 @@
 {% block content %}
 
 <br>
+<style>
+    ul {
+        list-style-type: none; /* Remove bullet points */
+        padding: 0; /* Remove padding */
+        margin: 0; /* Remove margin */
+    }
+
+    .imageItem {
+        display: inline-block;
+        border: none; /* Remove border */
+        margin: 0; /* Remove margin */
+    }
+</style>
 
 <div class="container">
     <div>
         <h1>Upload image list</h1>
     </div>
+    
+    <button id="filterButton" data-filtered="false">확인 안 한 이미지</button>
 
-    <div>
-        {% for image_contents in image_contents_list %}
-        <div class="col">
-            {% comment %} <a href="{% url "detect:image_detail" image_contents.pk %}"> {% endcomment %}
-            <a href="{% url "image:image_detail" image_contents.image_uuid %}">
-                <div>
-                    {{image_contents.pk}}
-                    {{image_contents.image_uuid}}
-                    {{image_contents.image}}
-                    <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
+    <div class="container text-center mt-3">
+        <div class="row justify-content-center">
+            <ul>
+                {% for image_contents in image_contents_list %}
+                <div class="imageItem row row-cols-1 row-cols-md-3" data-status="{{ image_contents.check_status}}">
+                    <a href="{% url "image:image_detail" image_contents.image_uuid %}">
+                        <div class="col">
+                            <div class="card">
+                                <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
+                                <div class="card-body">
+                                    <div class="check_status">
+                                        {% if image_contents.check_status == 0 %}
+                                        미확인 ❌
+                                        {% elif image_contents.check_status == 1 %}
+                                        확인 ✅
+                                        {% else %}
+                                        보류 🤔
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        업로드 날짜: <p>{{image_contents.create_at |date:"Y년 n월 j일 G:i" }}</p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                {% endfor %}
+            </ul>
         </div>
-        {% endfor %}
     </div>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const filterButton = document.getElementById("filterButton");
+            const imageItems = document.querySelectorAll(".imageItem");
+
+            filterButton.addEventListener("click", function() {
+                // Toggle the visibility of images based on their check_status
+                const isChecked = filterButton.getAttribute("data-checked");
+                const newStatus = isChecked === "true" ? "false" : "true";
+
+                imageItems.forEach(function(item) {
+                    const status = item.getAttribute("data-status");
+                    if (status == 1) {
+                        // not list-item. i just want to display it without list.
+                        item.style.display = newStatus === "true" ? "none" : "inline-block";
+                    }
+                });
+
+                filterButton.setAttribute("data-checked", newStatus);
+
+                // Change the text of the button
+                filterButton.innerHTML = newStatus === "true" ? "전체 이미지" : "확인 안 한 이미지";
+            });
+        });
+    </script>
 </div>
 
 {% endblock content %}
