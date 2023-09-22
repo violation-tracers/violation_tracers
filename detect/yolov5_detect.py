@@ -7,12 +7,12 @@ from django.conf import settings
 # 이미지에서 객체 인식 메서드
 def y_detect(image, image_path):
 
-    # 어떤모델을 쓸 것인지.
     # 기본 제공되는 yolov5s 모델 사용
     # model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     # custom 모델 사용
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results19.pt')
 
+    # # 모델 조정 옵션
     model.conf = 0.4 # NMS confidence threshold
     # iou = 0.45  # NMS IoU threshold
     # agnostic = False  # NMS class-agnostic
@@ -25,7 +25,8 @@ def y_detect(image, image_path):
     result = model(image, size=416)
 
     # 디텍팅된 이미지의 라벨중 마지막 name 만 반환
-    result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    # result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
+    result_detecting_list = list(map(int, result.pandas().xyxy[0]['name']))
     # print(result_detecting_list)
 
     # numpy array로 변환
@@ -39,6 +40,7 @@ def y_detect(image, image_path):
     if not os.path.exists(inferenced_image_path):
         os.makedirs(inferenced_image_path)
     
+    # media/inferenced_image/images 폴더가 없으면 생성
     if not os.path.exists(inferenced_image_path + '/images'):
         os.makedirs(inferenced_image_path + '/images')
 

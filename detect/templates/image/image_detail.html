@@ -4,47 +4,86 @@
 
 <br>
 
-<div class="container">
-    <h1>view_image</h1>
-    <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}">
-    <br>
-    업로드 유저: {{ image_contents.upload_user }}
-    <br>
-    업로드 날짜: {{ image_contents.create_at }}
-    <br>
-    기타 사항: {{ image_contents.upload_comment }}   
-    <br>
-    확인 상태:
-    {% if image_contents.check_status == 0 %}
-    미확인 ❌
-        {% if user.is_superuser %}
-            <div class='go_checking'>
-                <button>
-                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
-                </button>
-            <div>
-        {% endif %}
-    {% elif image_contents.check_status == 1 %}
-    확인 ✅
-    {% else %}
-    보류 🟠
-        {% if user.is_superuser %}
-            <div class='go_checking'>
-                <button>
-                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">확인하러가기</a>
-                </button>
-            <div>
-        {% endif %}
-    {% endif %}
-    <br>
-    {% if image_contents.check_user %}
-        확인자: {{ image_contents.check_user }}
-        <br>
-        확인날짜: {{ image_contents.check_date }}
-        <br>
-        확인 코멘트: {{ image_contents.check_comment }}
-    {% endif %}
+<style>
+    .uploaded-image {
+        max-width: 300px;
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
 
+    .
+</style>
+
+<div class="container text-center" >
+    <h1>신고 이미지 상세보기</h1>
+    <button>
+        <a href="{% url 'image:image_list' %}">목록보기</a>
+    </button>
+    <div class='uploaded-image' >
+        {% if user.is_superuser %}
+            <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
+        {% else %}    
+            <img src="/media/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
+        {% endif %}
+    </div>
+    <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12 col-12 card justify-content-center">
+        {% if image_contents.check_status != 1 %}
+            <div class="user_info">
+                <br>
+                업로드 유저: {{ image_contents.upload_user }}
+                <br>
+                업로드 날짜: {{ image_contents.create_at }}
+                <br>
+                기타 사항: {{ image_contents.uploader_comment }}
+            </div>
+            <br>
+            예측한 위반 사항:
+            {% for status in violation_status %}
+            <li>{{status}}</li>
+            {% endfor %}
+        {% endif %}
+        <div class="check_info">
+            <br>
+            확인 상태:
+            {% if image_contents.check_status == 0 %}
+                미확인 ❌
+                {% if user.is_superuser %}
+                    <div class='go_checking'>
+                        <button class='collect'>
+                            <a href="{% url 'image:pass_image' image_contents.image_uuid %}">확인</a>
+                        </button>
+                        <button class='check'>
+                            <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
+                        </button>
+                    </div>
+                {% endif %}
+            {% elif image_contents.check_status == 1 %}
+                확인 ✅
+            {% else %}
+                보류 🟠
+                {% comment %} {% if user.is_superuser %} {% endcomment %}
+                {% if user.groups %}
+                    <div class='go_checking'>
+                        <button class='collect'>
+                            <a href="{% url 'image:pass_image' image_contents.image_uuid %}">확인</a>
+                        </button>
+                        <button class='check'>
+                            <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <br>
+            {% if image_contents.check_user %}
+                확인자: {{ image_contents.check_user }}
+                <br>
+                확인날짜: {{ image_contents.check_date }}
+                <br>
+                확인 코멘트: {{ image_contents.check_comment }}
+            {% endif %}
+        </div>
+    </div>
 </div>
-
 {% endblock content %}
