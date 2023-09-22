@@ -58,6 +58,18 @@
           border-color: var(--primary);
       }
     </style>
+
+    <script>
+      function checkLogin(event) {
+        var isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        
+        if (!isAuthenticated) {
+          event.preventDefault(); // 기본 링크 동작을 중단
+          alert("로그인이 필요해요.");
+          window.location.href = "{% url 'accounts:login' %}";
+        }
+      }
+    </script>
     <title>Chasers</title>
 </head>
   <body>

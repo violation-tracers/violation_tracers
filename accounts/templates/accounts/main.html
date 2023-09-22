@@ -29,9 +29,9 @@
                                 <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Result List</a>
                             {% endif %}
                         {% else %}
-                            <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Image Upload</a>
-                            <a href="{% url "image:capture" %}" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight">Image Shoot</a>
-                            <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight">Image List</a>
+                            <a href="{% url "image:upload_image" %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft" onclick="checkLogin(event)">Image Upload</a>
+                            <a href="{% url "image:capture" %}" class="btn btn-secondary py-md-3 px-md-5 me-3 animated slideInRight" onclick="checkLogin(event)">Image Shoot</a>
+                            <a href="{% url "image:image_list" %}" class="btn btn-warning py-md-3 px-md-5 animated slideInRight" onclick="checkLogin(event)">Image List</a>
                         {% endif %}
                     </div>
                 </div>
