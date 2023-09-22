@@ -23,3 +23,5 @@ class ImageContents(models.Model):
     detect_result = models.TextField(blank=True)
     # 이미지 확인 날짜
     check_date = models.DateTimeField(blank=True, null=True)
+    # 이미지 검토 결과(오-위반:[8, 9, 10, 13-헬맷 미착용], 차-위반:[5, 6, 12], 기타위반: [20])
+    check_result = models.TextField(blank=True)
