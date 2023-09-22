@@ -5,48 +5,50 @@
 <div class='d-flex justify-content-center' style="margin-top : 2rem;">
     <h2>Sign Up</h2>
 </div>
-<div style='margin-bottom: 3rem; padding-left: 20rem; padding-right: 20rem;'>
-    <form method="POST">
-        {% csrf_token %}
-         <div class="mb-3 form-group {% if signup_form.username.errors %}has-error{% endif %}">
-            <label class="form-label" for="id_username" >아이디</label>
-            <input type="text" name="username" maxlength="150" minlength="2" autofocus="" required="" class="form-control" placeholder="Username" id="id_username">
-            {% if signup_form.username.errors %}
-                <p class="help-block">{{ signup_form.username.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="name">이름</label>
-            <input type="text" name="name" maxlength="20" minlength="2" required="" class="form-control" placeholder="Name" id="name">
-        </div>
-        <div class="mb-3 form-group {% if signup_form.password1.errors %}has-error{% endif %}">
-            <label class="form-label" for="password1">비밀번호</label>
-            <input type="password" name="password1" autocomplete="new-password1" class="form-control" placeholder="Password" required="" id="password1">
-            {% if signup_form.password1.errors %}
-                 <p class="help-block">{{ signup_form.password.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="mb-3 form-group {% if signup_form.password2.errors %}has-error{% endif %}">
-            <label class="form-label" for="password2">비밀번호 확인</label>
-            <input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Password confirmation" id="password2">
-            {% if signup_form.password2.errors %}
-                <p class="help-block">{{ signup_form.password2.errors }}</p>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="phone">연락처</label>
-            <input type="text" name="phone" placeholder="010-1234-5678" maxlength="20" minlength="12" class="form-control" title="" required="" id="phone">
-        </div>
-        <div class="mb-3 form-group {% if signup_form.email.errors %}has-error{% endif %}">
-            <label class="form-label" for="email">이메일</label>
-            <input type="email" name="email" maxlength="254" class="form-control" placeholder="Email address" title="" id="email">
-            {% if signup_form.email.errors %}
-                <p class="help-block">{{ signup_form.email.errors }}</p>
-            {% endif %}
-        </div>
-        <div>
-            <button class="btn btn-outline-dark">Register</button>
-        </div>
-    </form>
+<div class="row justify-content-center" style='margin-bottom: 3rem;'>
+    <div class="col-md-5">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3 form-group {% if signup_form.username.errors %}has-error{% endif %}">
+                <label class="form-label" for="id_username" >아이디</label>
+                <input type="text" name="username" maxlength="150" minlength="2" autofocus="" required="" class="form-control" placeholder="Username" id="id_username">
+                {% if signup_form.username.errors %}
+                    <p class="help-block">{{ signup_form.username.errors }}</p>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="name">이름</label>
+                <input type="text" name="name" maxlength="20" minlength="2" required="" class="form-control" placeholder="Name" id="name">
+            </div>
+            <div class="mb-3 form-group {% if signup_form.password1.errors %}has-error{% endif %}">
+                <label class="form-label" for="password1">비밀번호</label>
+                <input type="password" name="password1" autocomplete="new-password1" class="form-control" placeholder="Password" required="" id="password1">
+                {% if signup_form.password1.errors %}
+                    <p class="help-block">{{ signup_form.password.errors }}</p>
+                {% endif %}
+            </div>
+            <div class="mb-3 form-group {% if signup_form.password2.errors %}has-error{% endif %}">
+                <label class="form-label" for="password2">비밀번호 확인</label>
+                <input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Password Comfirmation" id="password2">
+                {% if signup_form.password2.errors %}
+                    <p class="help-block">{{ signup_form.password2.errors }}</p>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="phone">연락처</label>
+                <input type="text" name="phone" placeholder="010-1234-5678" maxlength="20" minlength="12" class="form-control" title="" required="" id="phone">
+            </div>
+            <div class="mb-3 form-group {% if signup_form.email.errors %}has-error{% endif %}">
+                <label class="form-label" for="email">이메일</label>
+                <input type="email" name="email" maxlength="254" class="form-control" placeholder="Email address" title="" id="email">
+                {% if signup_form.email.errors %}
+                    <p class="help-block">{{ signup_form.email.errors }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <button class="btn btn-outline-dark">Register</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock content %}
