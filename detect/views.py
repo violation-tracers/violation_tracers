@@ -85,51 +85,6 @@ def image_detail(request, uuid):
         'violation_status': violation_status
     })
 
-# 이미지 확인 기능. 관리자만 가능
-def check_image(request, uuid):
-    
-    # uuid to string and replace '-' to ''
-    target_uuid = str(uuid).replace('-', '')
-
-    # superuser인지 확인
-    # if request.user.is_superuser:
-    if not request.user.groups.filter(name='reporter').exists():
-        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
-        # 이미지 체크
-        if request.method == 'POST':
-            # check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
-            target_image.check_status = request.POST['check_status']
-            target_image.check_user = request.user
-            # check_comment를 남길 수 있어야 합니다.(선택)
-            if request.POST['check_comment']:
-                target_image.check_comment = request.POST['check_comment']
-            # check_date가 현재 시간으로 바뀌어야 합니다.
-            target_image.check_date = datetime.datetime.now()
-            target_image.save()
-            return redirect('image:image_detail', uuid=uuid)
-        # 이미지 상세보기
-        else:
-            return render(request, 'image/check_violation.html', {'image_contents': target_image})
-    else:
-        # 관리자가 아니라면 home으로 이동
-        return redirect('accounts:main')
-
-# 이미지 확인. 통과. pass
-def collect_image(request, uuid):
-    target_uuid = str(uuid).replace('-', '')
-
-    if not request.user.groups.filter(name='reporter').exists():
-        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
-        if target_image.check_status != 1:
-            target_image.check_status = 1
-            target_image.check_user = request.user
-            target_image.check_comment = '통과'
-            target_image.check_date = datetime.datetime.now()
-            target_image.save()
-            return redirect('image:image_detail', uuid=uuid)
-    else:
-        return redirect('accounts:main')
-
 # 촬영해서 업로드하는 페이지
 def capture(request):
 
@@ -166,5 +121,80 @@ def capture(request):
     else:
         form = ImageContentsForm()
     return render(request, 'image/capture.html', {'form': form})
+
+# 이미지 확인. 통과. pass
+def collect_image(request, uuid):
+    target_uuid = str(uuid).replace('-', '')
+
+    # 자동으로 디텍팅한 결과를 뽑아주는 메서드
+    def auto_checking(detect_result_list):
+        check_result = {
+            8:0,    # 오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협
+            9:0,    # 오토바이 황색선, 불법 주정차 혹은 중앙선 침범
+            10:0,   # 오토바이 보행자 도로 침범
+            13:0,    # 오토바이 헬맷 미착용
+            5:0,    # 자동차 흰색선, 정지선 위반 혹은 보행자 안전 위협
+            6:0,    # 자동차 황색선, 불법 주정차 혹은 중앙선 침범
+            12:0,    # 자동차 보행자 도로 침범
+        }
+        
+        for detect_result in set(detect_result_list):
+            if detect_result in check_result.keys():
+                check_result[detect_result] = detect_result_list.count(detect_result)
+        
+        # 오토바이 수
+        motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
+        # 헬멧 수
+        helmet_num = detect_result_list.count(11)
+
+        if motorbike_num > helmet_num:
+            check_result[13] = motorbike_num - helmet_num
+
+        return check_result
+
+    # 관리자 여부 확인
+    if not request.user.groups.filter(name='reporter').exists():
+        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
+
+        # 이미 확인된 이미지가 아니라면, 확인 상태를 1로 바꾸고, 자동으로 디텍팅한 결과를 뽑아주는 메서드
+        if target_image.check_status != 1:
+            target_image.check_status = 1
+            target_image.check_user = request.user
+            target_image.check_result = auto_checking(target_image.detect_result)
+            target_image.check_comment = '통과'
+            target_image.check_date = datetime.datetime.now()
+            target_image.save()
+            return redirect('image:image_detail', uuid=uuid)
+    else:
+        return redirect('accounts:main')
+
+# 이미지 확인 기능. 관리자만 가능
+def check_image(request, uuid):
+    
+    # uuid to string and replace '-' to ''
+    target_uuid = str(uuid).replace('-', '')
+
+    # superuser인지 확인
+    # if request.user.is_superuser:
+    if not request.user.groups.filter(name='reporter').exists():
+        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
+        # 이미지 체크
+        if request.method == 'POST':
+            # check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
+            target_image.check_status = request.POST['check_status']
+            target_image.check_user = request.user
+            # check_comment를 남길 수 있어야 합니다.(선택)
+            if request.POST['check_comment']:
+                target_image.check_comment = request.POST['check_comment']
+            # check_date가 현재 시간으로 바뀌어야 합니다.
+            target_image.check_date = datetime.datetime.now()
+            target_image.save()
+            return redirect('image:image_detail', uuid=uuid)
+        # 이미지 상세보기
+        else:
+            return render(request, 'image/check_violation.html', {'image_contents': target_image})
+    else:
+        # 관리자가 아니라면 home으로 이동
+        return redirect('accounts:main')
 
 # video streaming 중 실시간 detecting
