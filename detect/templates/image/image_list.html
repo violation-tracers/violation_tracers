@@ -16,47 +16,40 @@
         margin: 0; /* Remove margin */
     }
 </style>
-
-<div class="container">
-    <div>
-        <h1>Upload image list</h1>
-    </div>
-    
+<div>
+    <h1>Upload image list</h1>
+</div>
+<div style="margin-bottom: 1rem;">
     <button id="filterButton" data-filtered="false">확인 안 한 이미지</button>
-
-    <div class="container text-center mt-3">
-        <div class="row justify-content-center">
-            <ul>
-                {% for image_contents in image_contents_list %}
-                <div class="imageItem row row-cols-1 row-cols-md-3" data-status="{{ image_contents.check_status}}">
-                    <a href="{% url "image:image_detail" image_contents.image_uuid %}">
-                        <div class="col">
-                            <div class="card">
-                                <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
-                                <div class="card-body">
-                                    <div class="check_status">
-                                        {% if image_contents.check_status == 0 %}
-                                        미확인 ❌
-                                        {% elif image_contents.check_status == 1 %}
-                                        확인 ✅
-                                        {% else %}
-                                        보류 🤔
-                                        {% endif %}
-                                    </div>
-                                    <div>
-                                        업로드 날짜: <p>{{image_contents.create_at |date:"Y년 n월 j일 G:i" }}</p>
-                                    </div>
-                                    
-                                </div>
-                            </div>
+</div>
+<div class="row g-4 d-flex justify-content-center">
+    {% for image_contents in image_contents_list %}
+    <div class="col-md-auto">
+        <div class="imageItem" data-status="{{ image_contents.check_status}}">
+            <a href="{% url "image:image_detail" image_contents.image_uuid %}">
+                <div class="card">
+                <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
+                    <div class="card-body">
+                        <div class="check_status">
+                            {% if image_contents.check_status == 0 %}
+                            미확인 ❌
+                            {% elif image_contents.check_status == 1 %}
+                            확인 ✅
+                            {% else %}
+                            보류 🤔
+                            {% endif %}
                         </div>
-                    </a>
+                        <div>
+                            업로드 날짜: <p>{{image_contents.create_at |date:"Y년 n월 j일 G:i" }}</p>
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
-            </ul>
+            </a>
         </div>
     </div>
-        <script>
+    {% endfor %}
+</div>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const filterButton = document.getElementById("filterButton");
             const imageItems = document.querySelectorAll(".imageItem");
@@ -81,6 +74,6 @@
             });
         });
     </script>
-</div>
+
 
 {% endblock content %}
