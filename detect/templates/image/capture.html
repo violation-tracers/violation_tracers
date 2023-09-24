@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-
+{% load bootstrap5 %}
 {% block content %}
-    <h1>Camera Capture</h1>
-
-    <video id="video" autoplay></video>
-    <button id="capture">촬영하기</button>
-    <canvas id="canvas" style="display: none;"></canvas>
+    <h2 style="margin-top : 2rem; margin-botton: 2rem;">Camera Capture</h2>
+    <div>
+        <video id="video" autoplay></video>
+        <button id="capture" class="btn btn-outline-dark" style="margin-bottom: 1rem;">촬영하기</button>
+        <canvas id="canvas" style="display: none;"></canvas>
+    </div>
         
     <script>
         const video = document.getElementById('video');
