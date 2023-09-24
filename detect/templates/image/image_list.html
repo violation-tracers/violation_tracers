@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
+{% load bootstrap5 %}
 {% block content %}
-
-<br>
 <style>
     ul {
         list-style-type: none; /* Remove bullet points */
@@ -16,11 +14,12 @@
         margin: 0; /* Remove margin */
     }
 </style>
-<div>
-    <h1>Upload image list</h1>
+<div style="margin-top: 2rem;">
+    <h2>Upload image list</h2>
 </div>
-<div style="margin-bottom: 1rem;">
-    <button id="filterButton" data-filtered="false">확인 안 한 이미지</button>
+<div style="width: 90%; margin: 0 auto;">
+<div style="margin-bottom: 2rem;">
+    <button id="filterButton" data-filtered="false" Class="btn btn-outline-dark">확인 안 한 이미지</button>
 </div>
 <div class="row g-4 d-flex justify-content-center">
     {% for image_contents in image_contents_list %}
@@ -48,6 +47,7 @@
         </div>
     </div>
     {% endfor %}
+</div>
 </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
