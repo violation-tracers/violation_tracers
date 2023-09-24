@@ -57,6 +57,12 @@
           background: var(--primary);
           border-color: var(--primary);
       }
+
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
     </style>
 
     <script>
@@ -69,15 +75,39 @@
           window.location.href = "{% url 'accounts:login' %}";
         }
       }
+
+      function adjustFooterPosition() {
+        const footer = document.getElementById('sticky-footer');
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+
+        if (windowHeight >= documentHeight) {
+            // 스크롤이 없는 경우
+            footer.style.position = 'fixed';
+            footer.style.bottom = '0';
+        } else {
+            // 스크롤이 있는 경우
+            footer.style.position = 'relative';
+            footer.style.bottom = 'auto';
+        }
+    }
+
+    window.addEventListener('scroll', adjustFooterPosition);
+    window.addEventListener('resize', adjustFooterPosition);
+
+    // 초기 로드시에도 조절
+    window.addEventListener('load', adjustFooterPosition);
     </script>
     <title>Chasers</title>
 </head>
-  <body>
+  <body data-spy="scroll" data-target=".navbar">
     {% include 'navbar.html' %}
     <section class="container">
       {% block content %}
       {% endblock %}
     </section>
+    {% include "footer.html" %}
      <!-- JavaScript Libraries -->
      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

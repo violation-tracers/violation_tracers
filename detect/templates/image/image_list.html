@@ -24,7 +24,7 @@
 </div>
 <div class="row g-4 d-flex justify-content-center">
     {% for image_contents in image_contents_list %}
-    <div class="col-md-auto d-flex justify-content-center">
+    <div class="col-md-auto">
         <div class="imageItem" data-status="{{ image_contents.check_status}}">
             <a href="{% url "image:image_detail" image_contents.image_uuid %}">
                 <div class="card">
