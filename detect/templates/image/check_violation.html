@@ -98,7 +98,7 @@
                 data[inputField.name] = parseInt(inputField.value);
             });
     
-            // Send data to the server using AJAX
+            // 이미지 검토
             fetch(`/image/check/${uuid}/`, {
                 method: "POST",
                 headers: {
@@ -120,6 +120,7 @@
                 });
         }
         
+        // 이미지가 적절할 때 pass
         function collectDetect(){
             fetch(`/image/pass/${uuid}/`, {
                 method: 'POST',
