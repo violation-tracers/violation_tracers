@@ -27,101 +27,102 @@
         margin: 0 auto;
     }
 </style>
-
-<br>
-<div class="container text-center" >
-    <h1>신고 이미지 상세보기</h1>
-    <div class="btn_container">
-        <button>이전 이미지</button>
-        <button>
-            <a href="{% url 'image:image_list' %}">목록보기</a>
-        </button>
-        <button>다음 이미지</button>
-    </div>
-    <div class='uploaded-image col-lg-6 col-md-12 col-12' >
-        {% if user.groups.all.0.name != 'reporter' %}
-            <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
-        {% else %}    
-            <img src="/media/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
-        {% endif %}
-    </div>
-    <div class="image_info card col-lg-6 col-md-12 col-12">
-        <div class="image_info_text">
-            {% if image_contents.check_status != 1 %}
-                <div class="user_info">
-                    업로드 유저: {{ image_contents.upload_user }}
-                    <br>
-                    업로드 날짜: {{ image_contents.create_at }}
-                    <br>
-                    기타 사항: {{ image_contents.uploader_comment }}
-                </div>
-                <br>
-                예측한 위반 사항:
-                {% for status in violation_status %}
-                <li>{{status}}</li>
-                {% endfor %}
+    <h2 style="margin-top : 2rem; margin-bottom: 2rem;">Image Detail</h2>
+    <div class="row">
+        <div class='uploaded-image col-lg-6' >
+            {% if user.groups.all.0.name != 'reporter' %}
+                <img src="/media/inferenced_image/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
+            {% else %}    
+                <img src="/media/{{image_contents.image}}" alt="{{ image_contents.upload_user }}" width='100%'>
             {% endif %}
-            {% comment %} <div>
+        </div>
+        <div class="image_info card col-lg-6">
+            <div class="image_info_text">
                 {% if image_contents.check_status != 1 %}
-                    <button class="collect_detect">
-                        <a href="{% url 'image:pass_image' image_contents.image_uuid%}">객체를 잘 검출 했나요?</a>
-                    </button>
+                    <div class="user_info" style="margin-bottom: 1rem;" >
+                        <p>
+                            업로드 유저: {{ image_contents.upload_user }}
+                        </p>
+                        <p>
+                            업로드 날짜: {{ image_contents.create_at }}
+                        </p>
+                        <p>
+                            기타 사항: {{ image_contents.uploader_comment }}
+                        </p>
+                    </div>
+                    {% for status in violation_status %}
+                    <span>
+                        예측한 위반 사항: {{status}}
+                    </span>
+                    {% endfor %}
                 {% endif %}
-            </div> {% endcomment %}
-            <div class="check_info">
-                확인 상태:
-                {% if image_contents.check_status == 0 %}
-                    미확인 ❌
-                    {% if user.groups.all.0.name != 'reporter' %}
-                        <div class='go_checking'>
-                            <span>
-                                예측 결과가 정확한가요?
-                            </span>
-                            <button class='collect'>
-                                <a href="{% url 'image:pass_image' image_contents.image_uuid %}">적합</a>
-                            </button>
-                            <span>
-                                결과를 수정해야하나요?
-                            </span>
-                            <button class='check'>
-                                <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
-                            </button>
-                        </div>
+                <div class="check_info" style="margin-top: 1rem;">
+                    확인 상태:
+                    {% if image_contents.check_status == 0 %}
+                        미확인 ❌
+                        {% if user.groups.all.0.name != 'reporter' %}
+                            <div class='go_checking' style="margin-top: 1rem;">
+                                <p>
+                                    예측 결과가 정확한가요?
+                                    <a href="{% url 'image:pass_image' image_contents.image_uuid %}">
+                                        <button class='collect btn btn-outline-dark btn-sm'>적합</button>
+                                    </a>
+                                </p>
+                                <p>
+                                    결과를 수정해야하나요?
+                                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">
+                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
+                                    </a>
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% elif image_contents.check_status == 1 %}
+                        확인 ✅ - 예측결과 적합
+                        {% if user.groups.all.0.name != 'reporter' %}
+                            <div class='go_checking' style="margin-top: 1rem;">
+                                <p>
+                                    결과를 수정해야하나요?
+                                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">
+                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
+                                    </a>
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        확인 ✅ - 관리자 수정
+                        {% if user.groups.all.0.name != 'reporter' %}
+                            <div class='go_checking'>
+                                <p>
+                                    결과를 수정해야하나요?
+                                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">
+                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
+                                    </a>
+                                </p>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                {% elif image_contents.check_status == 1 %}
-                    확인 ✅ - 예측결과 적합
-                    {% if user.groups.all.0.name != 'reporter' %}
-                        <div class='go_checking'>
-                            <span>
-                                결과를 수정해야하나요?
-                            </span>
-                            <button class='check'>
-                                <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
-                            </button>
-                        </div>
+                    {% if image_contents.check_user %}
+                    <p>
+                        확인자: {{ image_contents.check_user }}
+                    </p>
+                    <p>
+                        확인날짜: {{ image_contents.check_date }}
+                    </p>
+                    <p>
+                        확인 코멘트: {{ image_contents.check_comment }}
+                    </p>
                     {% endif %}
-                {% else %}
-                    확인 ✅ - 관리자 수정
-                    {% if user.groups.all.0.name != 'reporter' %}
-                        <div class='go_checking'>
-                            <span>
-                                결과를 수정해야하나요?
-                            </span>
-                            <button class='check'>
-                                <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
-                            </button>
-                        </div>
-                    {% endif %}
-                {% endif %}
-                {% if image_contents.check_user %}
-                    확인자: {{ image_contents.check_user }}
-                    <br>
-                    확인날짜: {{ image_contents.check_date }}
-                    <br>
-                    확인 코멘트: {{ image_contents.check_comment }}
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-5"></div>
+        <div class="btn-group col-2" style="margin-top: 2rem;">
+            <button class="btn btn-outline-dark"><i class="bi bi-arrow-left-circle"></i></button>
+            <button class="btn btn-outline-dark"><a href="{% url 'image:image_list' %}"><i class="bi bi-card-list"></i></a></button>
+            <button class="btn btn-outline-dark"><i class="bi bi-arrow-right-circle"></i></button>
+        </div>
+        <div class="col-5"></div>
+    </div>
 {% endblock content %}

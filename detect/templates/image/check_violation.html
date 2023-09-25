@@ -7,39 +7,35 @@
         max-width: 600px;
     }
 </style>
-
-    <br>
-
-    <h1>위반 여부 확인</h1>
-    <div class='container'>
+    <h2 style="margin-top: 2rem; margin-bottom: 2rem;">Check Violations</h2>
         {% comment %} 이미지 최대 크기 600px {% endcomment %}
-        <div class="image_container">
+    <div class="row">
+        <div class="image_container col-6">
             <img src="/media/inferenced_image/{{image_contents.image}}" alt="업로드되어 디텍팅된 이미지" width='100%' height='auto'>
         </div>
+        {% comment %} test 중 {% endcomment %}
+        <div class="col-6">
+            <button id='collect_detect' style="display: block; margin-bottom: 1rem;" class="btn btn-outline-dark">검출이 잘 되었습니다.</button>
+            <hr>
+            <select id="selectField" style="margin-bottom: 1rem;">
+            {% comment %} select head {% endcomment %}
+                <option value="" selected disabled hidden>위반 사항을 선택하세요</option>
+                <option value="8">오토바이 정지선 위반, 보행자 안전 위협</option>
+                <option value="9">오토바이 불법 주정차 혹은 중앙선 침범</option>
+                <option value="10">오토바이 보행자 도로 침범</option>
+                <option value="13">오토바이 헬맷 미착용</option>
+                <option value="5">자동차 정지선 위반 혹은 보행자 안전 위협</option>
+                <option value="6">자동차 불법 주정차 혹은 중앙선 침범</option>
+                <option value="12">자동차 보행자 도로 침범</option>d
+            </select>
+
+            <div id="inputContainer">
+                <label for="check_comment" style="margin-bottom: 1rem;">기타 검토 사항</label>
+                <input type='text' id='check_comment' name='check_comment' placeholder='ex. 보류 사유'>
+            </div>
+            <button id="submitButton" style="display: none; margin-top: 1rem;" class="btn btn-outline-dark">Submit</button>
+        </div>
     </div>
-
-    <button id='collect_detect' >객체가 잘 잡혔습니다.</button>
-    {% comment %} test 중 {% endcomment %}
-    <h1>Dynamic Input Fields</h1>
-
-    <select id="selectField">
-        {% comment %} select head {% endcomment %}
-        <option value="" selected disabled hidden>위반 사항을 선택하세요</option>
-        <option value="8">오토바이 정지선 위반, 보행자 안전 위협</option>
-        <option value="9">오토바이 불법 주정차 혹은 중앙선 침범</option>
-        <option value="10">오토바이 보행자 도로 침범</option>
-        <option value="13">오토바이 헬맷 미착용</option>
-        <option value="5">자동차 정지선 위반 혹은 보행자 안전 위협</option>
-        <option value="6">자동차 불법 주정차 혹은 중앙선 침범</option>
-        <option value="12">자동차 보행자 도로 침범</option>
-    </select>
-
-    <div id="inputContainer">
-        <label for="check_comment">기타 검토 사항</label>
-        <input type='text' id='check_comment' name='check_comment' placeholder='ex. 보류 사유'>
-    </div>
-    <button id="submitButton" style="display: none;">Submit</button>
-
 
     <script>
 
@@ -64,6 +60,7 @@
 
                 // Create a new input field
                 var inputlabel = document.createElement("label");
+                inputlabel.style = "padding-right: 1rem;"
                 inputlabel.textContent = select.options[select.selectedIndex].text;
 
                 // input
