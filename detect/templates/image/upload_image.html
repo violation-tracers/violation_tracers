@@ -1,15 +1,26 @@
 {% extends "base.html" %}
 {% load bootstrap5 %}
 {% block content %}
+<style>
+    textarea {
+        resize: none;
+    }
+
+</style>
     <h2 style="margin-top : 2rem; margin-bottom: 2rem;">Upload Image</h2>
-    {% comment %} 예시 사진을 넣어줍니다. {% endcomment %}
     <div style="width: 90%; margin: 0 auto;">
-        <img src="/static/img/example.jpg" alt="example" width="300px" height="300px">
-        <p style="margin-top: 1rem;">예시 사진처럼 위반 상황이 잘 표현된 이미지를 업로드해주세요.</p>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            <button type="submit" class="btn btn-outline-dark">Upload</button>
-        </form>
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-lg-6">
+                <img src="/static/img/example.jpg" alt="example" width="420px" height="420px">
+                <p style="margin-top: 1rem;">예시 사진처럼 위반 상황이 잘 표현된 이미지를 업로드해주세요.</p>
+            </div>
+            <div class="col-lg-6">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn btn-outline-dark">Upload</button>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock content %}
