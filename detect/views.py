@@ -6,7 +6,7 @@ import os
 from . import yolov5_detect
 from .models import ImageContents
 import base64
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 import json
 from django.shortcuts import redirect
 from .forms import ImageContentsForm
@@ -122,51 +122,61 @@ def capture(request):
         form = ImageContentsForm()
     return render(request, 'image/capture.html', {'form': form})
 
+# 자동으로 디텍팅한 결과를 뽑아주는 메서드
+def auto_checking(detect_result, collect_detect):
+    if collect_detect:
+        detect_result_list = eval(detect_result)
+    else:
+        detect_result_list = detect_result
+    print(detect_result_list)
+    check_result = {
+        8:0,    # 오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협
+        9:0,    # 오토바이 황색선, 불법 주정차 혹은 중앙선 침범
+        10:0,   # 오토바이 보행자 도로 침범
+        13:0,    # 오토바이 헬맷 미착용
+        5:0,    # 자동차 흰색선, 정지선 위반 혹은 보행자 안전 위협
+        6:0,    # 자동차 황색선, 불법 주정차 혹은 중앙선 침범
+        12:0,    # 자동차 보행자 도로 침범
+    }
+    
+    for detect_result in set(detect_result_list):
+        if detect_result in check_result.keys():
+            check_result[detect_result] = detect_result_list.count(detect_result)
+    print('check_result ',check_result)
+    print('detect_result_list ',detect_result_list)
+    # 오토바이 수
+    motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
+    # 헬멧 수
+    helmet_num = detect_result_list.count(11)
+
+    if motorbike_num > helmet_num:
+        check_result[13] = motorbike_num - helmet_num
+
+    return check_result
+
 # 이미지 확인. 통과. pass
 def collect_image(request, uuid):
     target_uuid = str(uuid).replace('-', '')
-
-    # 자동으로 디텍팅한 결과를 뽑아주는 메서드
-    def auto_checking(detect_result_list):
-        check_result = {
-            8:0,    # 오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협
-            9:0,    # 오토바이 황색선, 불법 주정차 혹은 중앙선 침범
-            10:0,   # 오토바이 보행자 도로 침범
-            13:0,    # 오토바이 헬맷 미착용
-            5:0,    # 자동차 흰색선, 정지선 위반 혹은 보행자 안전 위협
-            6:0,    # 자동차 황색선, 불법 주정차 혹은 중앙선 침범
-            12:0,    # 자동차 보행자 도로 침범
-        }
-        
-        for detect_result in set(detect_result_list):
-            if detect_result in check_result.keys():
-                check_result[detect_result] = detect_result_list.count(detect_result)
-        
-        # 오토바이 수
-        motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
-        # 헬멧 수
-        helmet_num = detect_result_list.count(11)
-
-        if motorbike_num > helmet_num:
-            check_result[13] = motorbike_num - helmet_num
-
-        return check_result
-
     # 관리자 여부 확인
     if not request.user.groups.filter(name='reporter').exists():
+        
         target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
-
+        
         # 이미 확인된 이미지가 아니라면, 확인 상태를 1로 바꾸고, 자동으로 디텍팅한 결과를 뽑아주는 메서드
-        if target_image.check_status != 1:
-            target_image.check_status = 1
-            target_image.check_user = request.user
-            target_image.check_result = auto_checking(target_image.detect_result)
-            target_image.check_comment = '통과'
-            target_image.check_date = datetime.datetime.now()
-            target_image.save()
-            return redirect('image:image_detail', uuid=uuid)
+        
+        # check_status가 1(예측 결과 적합으로 자동 확인)
+        target_image.check_status = 1
+        target_image.check_user = request.user
+        target_image.check_result = auto_checking(target_image.detect_result, True),
+        target_image.check_comment = '통과?'
+        target_image.check_date = datetime.datetime.now()
+        target_image.save()
+        return redirect('image:image_detail', uuid=uuid)
+        # return HttpResponse(status=200)
     else:
         return redirect('accounts:main')
+        # return HttpResponse(status=403)
+
 
 # 이미지 확인 기능. 관리자만 가능
 def check_image(request, uuid):
@@ -174,18 +184,27 @@ def check_image(request, uuid):
     # uuid to string and replace '-' to ''
     target_uuid = str(uuid).replace('-', '')
 
+    # json으로 반환된 client의 데이터를 print
+    if request.body:
+        data = json.loads(request.body.decode('utf-8'))
+        check_comment = data.pop('check_comment')
+
     # superuser인지 확인
     # if request.user.is_superuser:
     if not request.user.groups.filter(name='reporter').exists():
         target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
         # 이미지 체크
-        if request.method == 'POST':
-            # check_status가 1로 바뀌고, check_user가 admin으로 바뀌어야 합니다.
-            target_image.check_status = request.POST['check_status']
+        if request.method == 'POST' and request.body:
+
+            data = json.loads(request.body.decode('utf-8'))
+            check_comment = data.pop('check_comment')
+
+            # check_status가 2(예측 결과 부적합으로 관리자가 결과 확인)
+            target_image.check_status = 2
             target_image.check_user = request.user
-            # check_comment를 남길 수 있어야 합니다.(선택)
-            if request.POST['check_comment']:
-                target_image.check_comment = request.POST['check_comment']
+            target_image.check_result = auto_checking(data, False)
+            target_image.check_comment = check_comment
+
             # check_date가 현재 시간으로 바뀌어야 합니다.
             target_image.check_date = datetime.datetime.now()
             target_image.save()

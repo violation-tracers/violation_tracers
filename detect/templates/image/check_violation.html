@@ -1,21 +1,146 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<style>
+    .image_container{
+        max-width: 600px;
+    }
+</style>
+
     <br>
 
     <h1>위반 여부 확인</h1>
     <div class='container'>
-        <img src="/media/inferenced_image/{{image_contents.image}}" alt="업로드되어 디텍팅된 이미지">
-        <br>
-        {% comment %} 이미지 확인 결과에 따라 1, 2를 유저가 선택하도록 {% endcomment %}
-        {% comment %} 이미 check_status가 있다면 미리 해당 값을 채워넣어놓기 {% endcomment %}
-        <form method="POST">
-            {% csrf_token %}
-            <input type="radio" name="check_status" value="1">위반
-            <input type="radio" name="check_status" value="2">보류
-            <br>
-            <textarea name="check_comment" rows="4" cols="15" placeholder="ex. 보류 사유"></textarea>
-            <input type="submit" value="확인">
-        </form>
+        {% comment %} 이미지 최대 크기 600px {% endcomment %}
+        <div class="image_container">
+            <img src="/media/inferenced_image/{{image_contents.image}}" alt="업로드되어 디텍팅된 이미지" width='100%' height='auto'>
+        </div>
+    </div>
+
+    <button id='collect_detect' >객체가 잘 잡혔습니다.</button>
+    {% comment %} test 중 {% endcomment %}
+    <h1>Dynamic Input Fields</h1>
+
+    <select id="selectField">
+        {% comment %} select head {% endcomment %}
+        <option value="" selected disabled hidden>위반 사항을 선택하세요</option>
+        <option value="8">오토바이 정지선 위반, 보행자 안전 위협</option>
+        <option value="9">오토바이 불법 주정차 혹은 중앙선 침범</option>
+        <option value="10">오토바이 보행자 도로 침범</option>
+        <option value="13">오토바이 헬맷 미착용</option>
+        <option value="5">자동차 정지선 위반 혹은 보행자 안전 위협</option>
+        <option value="6">자동차 불법 주정차 혹은 중앙선 침범</option>
+        <option value="12">자동차 보행자 도로 침범</option>
+    </select>
+
+    <div id="inputContainer">
+        <label for="check_comment">기타 검토 사항</label>
+        <input type='text' id='check_comment' name='check_comment' placeholder='ex. 보류 사유'>
+    </div>
+    <button id="submitButton" style="display: none;">Submit</button>
+
+
+    <script>
+
+        var currentURL = window.location.href;
+        var url = new URL(currentURL);
+        var pathname = url.pathname;
+        var segments = pathname.split('/');
+        var uuid = segments[3];
+
+        // Function to add input fields based on the selected option
+        function addInputField() {
+            var select = document.getElementById("selectField");
+            var inputContainer = document.getElementById("inputContainer");
+            var submitButton = document.getElementById("submitButton");
+            var selectedValue = select.options[select.selectedIndex].value;
+
+            // Check if an input field with the selected value already exists
+            if (!document.getElementById(selectedValue)) {
+                
+                // container
+                var containerDiv = document.createElement("div");
+
+                // Create a new input field
+                var inputlabel = document.createElement("label");
+                inputlabel.textContent = select.options[select.selectedIndex].text;
+
+                // input
+                var inputField = document.createElement("input");
+                inputField.type = "number";
+                inputField.id = selectedValue;
+                inputField.name = selectedValue;
+                inputField.min = "0";
+                inputField.max = "20";
+                inputField.value = "1";
+
+                
+                containerDiv.appendChild(inputlabel);
+                containerDiv.appendChild(inputField);
+
+                // Append the input field to the container
+                inputContainer.appendChild(containerDiv);
+                submitButton.style.display = 'block';
+            }
+        }
+
+        // Add an event listener to the select element
+        document.getElementById("selectField").addEventListener("change", addInputField);
+
+        function sendDataToServer() {
+            var select = document.getElementById("selectField");
+            var inputFields = document.querySelectorAll("#inputContainer input");
+            var data = {};
+    
+            // Collect values from input fields
+            inputFields.forEach(function (inputField) {
+                data[inputField.name] = parseInt(inputField.value);
+            });
+    
+            // Send data to the server using AJAX
+            fetch(`/image/check/${uuid}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(function (response) {
+                    // Handle the server's response here
+                    console.log("Server response: " + response);
+                    window.location.href = `/image/image_detail/${uuid}/`;
+
+                })
+                .catch(function (error) {
+                    // Handle any errors here
+                    console.error("Error: " + error);
+                    window.location.href = `/image/list/`;
+                });
+        }
+        
+        function collectDetect(){
+            fetch(`/image/pass/${uuid}/`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            })
+            .then(res => {
+                console.log("success")
+                window.location.href = `/image/image_detail/${uuid}/`;
+            })
+            .catch(error => {
+                console.error("Error: " + error);
+                window.location.href = `/image/list/`;
+            })
+        }
+
+        document.getElementById("submitButton").addEventListener("click", sendDataToServer);
+        
+        document.getElementById("collect_detect").addEventListener("click", collectDetect);
+    </script>
     </div>
 {% endblock content %}
