@@ -61,15 +61,14 @@
                 <li>{{status}}</li>
                 {% endfor %}
             {% endif %}
-            <div>
+            {% comment %} <div>
                 {% if image_contents.check_status != 1 %}
                     <button class="collect_detect">
                         <a href="{% url 'image:pass_image' image_contents.image_uuid%}">객체를 잘 검출 했나요?</a>
                     </button>
                 {% endif %}
-            </div>
+            </div> {% endcomment %}
             <div class="check_info">
-                <br>
                 확인 상태:
                 {% if image_contents.check_status == 0 %}
                     미확인 ❌
@@ -114,7 +113,6 @@
                         </div>
                     {% endif %}
                 {% endif %}
-                <br>
                 {% if image_contents.check_user %}
                     확인자: {{ image_contents.check_user }}
                     <br>
