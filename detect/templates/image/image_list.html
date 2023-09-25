@@ -29,7 +29,11 @@
         <div class="imageItem" data-status="{{ image_contents.check_status}}">
             <a href="{% url "image:image_detail" image_contents.image_uuid %}">
                 <div class="card">
-                <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
+                {% if user.groups.all.0.name != 'reporter' %}
+                    <img src="/media/inferenced_image/{{image_contents.image}}" alt="image" width="200" height="200">
+                {% else %}
+                    <img src="/media/{{image_contents.image}}" alt="image" width="200" height="200">
+                {% endif %}
                     <div class="card-body">
                         <div class="check_status">
                             {% if image_contents.check_status == 0 %}
