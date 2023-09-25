@@ -141,13 +141,29 @@ def auto_checking(detect_result, collect_detect):
     
     for detect_result in set(detect_result_list):
         if detect_result in check_result.keys():
-            check_result[detect_result] = detect_result_list.count(detect_result)
-    print('check_result ',check_result)
-    print('detect_result_list ',detect_result_list)
-    # 오토바이 수
-    motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
-    # 헬멧 수
-    helmet_num = detect_result_list.count(11)
+            if collect_detect:
+                check_result[detect_result] = detect_result_list.count(detect_result)
+            else:
+                check_result[detect_result] = detect_result_list[detect_result]
+    if collect_detect:
+        # 오토바이 수
+        motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
+        # 헬멧 수
+        helmet_num = detect_result_list.count(11)
+    else:
+        motorbike_num = 0
+        helmet_num = 0
+        if "8" in detect_result_list.keys():
+            motorbike_num += detect_result_list["8"]
+        if "9" in detect_result_list.keys():
+            motorbike_num += detect_result_list["9"]
+        if "10" in detect_result_list.keys():
+            motorbike_num += detect_result_list["10"]
+        if "7" in detect_result_list.keys():
+            motorbike_num += detect_result_list["7"]
+        
+        if "11" in detect_result_list.keys():
+            helmet_num += detect_result_list["11"]
 
     if motorbike_num > helmet_num:
         check_result[13] = motorbike_num - helmet_num
@@ -184,11 +200,6 @@ def check_image(request, uuid):
     # uuid to string and replace '-' to ''
     target_uuid = str(uuid).replace('-', '')
 
-    # json으로 반환된 client의 데이터를 print
-    if request.body:
-        data = json.loads(request.body.decode('utf-8'))
-        check_comment = data.pop('check_comment')
-
     # superuser인지 확인
     # if request.user.is_superuser:
     if not request.user.groups.filter(name='reporter').exists():
@@ -203,8 +214,10 @@ def check_image(request, uuid):
             target_image.check_status = 2
             target_image.check_user = request.user
             target_image.check_result = auto_checking(data, False)
-            target_image.check_comment = check_comment
-
+            if check_comment:
+                target_image.check_comment = check_comment
+            else:
+                target_image.check_comment = target_image.check_comment
             # check_date가 현재 시간으로 바뀌어야 합니다.
             target_image.check_date = datetime.datetime.now()
             target_image.save()
