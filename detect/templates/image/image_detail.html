@@ -61,6 +61,13 @@
                 <li>{{status}}</li>
                 {% endfor %}
             {% endif %}
+            <div>
+                {% if image_contents.check_status != 1 %}
+                    <button class="collect_detect">
+                        <a href="{% url 'image:pass_image' image_contents.image_uuid%}">객체를 잘 검출 했나요?</a>
+                    </button>
+                {% endif %}
+            </div>
             <div class="check_info">
                 <br>
                 확인 상태:
@@ -68,30 +75,39 @@
                     미확인 ❌
                     {% if user.groups.all.0.name != 'reporter' %}
                         <div class='go_checking'>
+                            <span>
+                                예측 결과가 정확한가요?
+                            </span>
                             <button class='collect'>
                                 <a href="{% url 'image:pass_image' image_contents.image_uuid %}">적합</a>
                             </button>
+                            <span>
+                                결과를 수정해야하나요?
+                            </span>
                             <button class='check'>
                                 <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
                             </button>
                         </div>
                     {% endif %}
                 {% elif image_contents.check_status == 1 %}
-                    확인 ✅
+                    확인 ✅ - 예측결과 적합
                     {% if user.groups.all.0.name != 'reporter' %}
                         <div class='go_checking'>
+                            <span>
+                                결과를 수정해야하나요?
+                            </span>
                             <button class='check'>
                                 <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
                             </button>
                         </div>
                     {% endif %}
                 {% else %}
-                    검토 필요 🟠
+                    확인 ✅ - 관리자 수정
                     {% if user.groups.all.0.name != 'reporter' %}
                         <div class='go_checking'>
-                            <button class='collect'>
-                                <a href="{% url 'image:pass_image' image_contents.image_uuid %}">적합</a>
-                            </button>
+                            <span>
+                                결과를 수정해야하나요?
+                            </span>
                             <button class='check'>
                                 <a href="{% url 'image:check_image' image_contents.image_uuid %}">검토</a>
                             </button>
