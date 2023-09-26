@@ -161,7 +161,6 @@ def auto_checking(detect_result, collect_detect):
         detect_result_list = eval(detect_result)
     else:
         detect_result_list = detect_result
-    print(detect_result_list)
     check_result = {
         8:0,    # 오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협
         9:0,    # 오토바이 황색선, 불법 주정차 혹은 중앙선 침범
@@ -171,13 +170,14 @@ def auto_checking(detect_result, collect_detect):
         6:0,    # 자동차 황색선, 불법 주정차 혹은 중앙선 침범
         12:0,    # 자동차 보행자 도로 침범
     }
-    
+
     for detect_result in set(detect_result_list):
-        if detect_result in check_result.keys():
+        if int(detect_result) in check_result.keys():
             if collect_detect:
                 check_result[detect_result] = detect_result_list.count(detect_result)
             else:
-                check_result[detect_result] = detect_result_list[detect_result]
+                check_result[int(detect_result)] = detect_result_list[detect_result]
+
     if collect_detect:
         # 오토바이 수
         motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
@@ -200,7 +200,6 @@ def auto_checking(detect_result, collect_detect):
 
     if motorbike_num > helmet_num:
         check_result[13] = motorbike_num - helmet_num
-
     return check_result
 
 # 이미지 확인. 통과. pass
@@ -217,8 +216,8 @@ def collect_image(request, uuid):
         target_image.check_status = 1
         target_image.check_user = request.user
         target_image.check_result = auto_checking(target_image.detect_result, True),
-        target_image.check_comment = '통과?'
-        target_image.check_date = datetime.datetime.now()
+        target_image.check_comment = '통과'
+        target_image.check_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         target_image.save()
         return redirect('image:image_detail', uuid=uuid)
         # return HttpResponse(status=200)
@@ -252,7 +251,8 @@ def check_image(request, uuid):
             else:
                 target_image.check_comment = target_image.check_comment
             # check_date가 현재 시간으로 바뀌어야 합니다.
-            target_image.check_date = datetime.datetime.now()
+            # asio/seoul 기준의 시간대로 timezone 설정
+            target_image.check_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
             target_image.save()
             return redirect('image:image_detail', uuid=uuid)
         # 이미지 상세보기
