@@ -80,9 +80,42 @@ def image_detail(request, uuid):
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
     violation_status = model_output.chaser(image.detect_result)
+    if image.check_result:
+        check_result = eval(image.check_result)
+
+        check_result_list = []
+        for status, num in check_result.items():
+            if num:
+                if status == 8:
+                    sentence = '오토바이 정지선 위반 혹은 보행자 안전 위협 ' + str(num) +  '대'
+                    check_result_list.append(sentence)
+                elif status == 9:
+                    sentence = '오토바이 불법 주정차 혹은 중앙선 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 10:
+                    sentence = '오토바이 보행자 도로 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 13:
+                    sentence = '오토바이 헬맷 미착용 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 5:
+                    sentence = '자동차 정지선 위반 혹은 보행자 안전 위협 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 6:
+                    sentence = '자동차 불법 주정차 혹은 중앙선 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 12:
+                    sentence = '자동차 보행자 도로 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+
+        return render(request, 'image/image_detail.html', {
+            'image_contents': image,
+            'violation_status': violation_status,
+            'check_violation_status': check_result_list,
+        })
     return render(request, 'image/image_detail.html', {
         'image_contents': image,
-        'violation_status': violation_status
+        'violation_status': violation_status,
     })
 
 # 촬영해서 업로드하는 페이지
