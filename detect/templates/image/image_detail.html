@@ -126,9 +126,21 @@
     <div class="row">
         <div class="col-5"></div>
         <div class="btn-group col-2" style="margin-top: 2rem;">
-            <button class="btn btn-outline-dark"><i class="bi bi-arrow-left-circle"></i></button>
+            {% if pre_image_uuid %}
+            <button class="btn btn-outline-dark">
+                <a href="{% url 'image:image_detail' pre_image_uuid %}">
+                    <i class="bi bi-arrow-left-circle"></i>
+                </a>
+            </button>
+            {% endif %}
             <button class="btn btn-outline-dark"><a href="{% url 'image:image_list' %}"><i class="bi bi-card-list"></i></a></button>
-            <button class="btn btn-outline-dark"><i class="bi bi-arrow-right-circle"></i></button>
+            {% if next_image_uuid %}
+            <button class="btn btn-outline-dark">
+                <a href="{% url 'image:image_detail' next_image_uuid %}">
+                    <i class="bi bi-arrow-right-circle"></i>
+                </a>
+            </button>
+            {% endif %}
         </div>
         <div class="col-5"></div>
     </div>
