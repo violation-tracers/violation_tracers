@@ -79,10 +79,59 @@ def image_detail(request, uuid):
     # uuid to string and replace '-' to ''
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
+
+    image_list_length = ImageContents.objects.all().count()
+    current_index = image.id
+
+    pre_image = None
+    next_image = None
+
+    if current_index > 1:
+        pre_image = ImageContents.objects.filter(id__lt=image.id).order_by('-id').first()
+    if current_index < image_list_length:
+        next_image = ImageContents.objects.filter(id__gt=image.id).order_by('id').first()
+
     violation_status = model_output.chaser(image.detect_result)
+    if image.check_result:
+        check_result = eval(image.check_result)
+
+        check_result_list = []
+        for status, num in check_result.items():
+            if num:
+                if status == 8:
+                    sentence = '오토바이 정지선 위반 혹은 보행자 안전 위협 ' + str(num) +  '대'
+                    check_result_list.append(sentence)
+                elif status == 9:
+                    sentence = '오토바이 불법 주정차 혹은 중앙선 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 10:
+                    sentence = '오토바이 보행자 도로 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 13:
+                    sentence = '오토바이 헬맷 미착용 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 5:
+                    sentence = '자동차 정지선 위반 혹은 보행자 안전 위협 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 6:
+                    sentence = '자동차 불법 주정차 혹은 중앙선 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+                elif status == 12:
+                    sentence = '자동차 보행자 도로 침범 ' + str(num) + ' 대'
+                    check_result_list.append(sentence)
+
+        return render(request, 'image/image_detail.html', {
+            'image_contents': image,
+            'pre_image_uuid': pre_image.image_uuid if pre_image else None,
+            'next_image_uuid': next_image.image_uuid if next_image else None,
+            'violation_status': violation_status,
+            'check_violation_status': check_result_list,
+        })
     return render(request, 'image/image_detail.html', {
         'image_contents': image,
-        'violation_status': violation_status
+        'pre_image_uuid': pre_image.image_uuid if pre_image else None,
+        'next_image_uuid': next_image.image_uuid if next_image else None,
+        'violation_status': violation_status,
     })
 
 # 촬영해서 업로드하는 페이지
@@ -128,7 +177,6 @@ def auto_checking(detect_result, collect_detect):
         detect_result_list = eval(detect_result)
     else:
         detect_result_list = detect_result
-    print(detect_result_list)
     check_result = {
         8:0,    # 오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협
         9:0,    # 오토바이 황색선, 불법 주정차 혹은 중앙선 침범
@@ -138,13 +186,14 @@ def auto_checking(detect_result, collect_detect):
         6:0,    # 자동차 황색선, 불법 주정차 혹은 중앙선 침범
         12:0,    # 자동차 보행자 도로 침범
     }
-    
+
     for detect_result in set(detect_result_list):
-        if detect_result in check_result.keys():
+        if int(detect_result) in check_result.keys():
             if collect_detect:
                 check_result[detect_result] = detect_result_list.count(detect_result)
             else:
-                check_result[detect_result] = detect_result_list[detect_result]
+                check_result[int(detect_result)] = detect_result_list[detect_result]
+
     if collect_detect:
         # 오토바이 수
         motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
@@ -167,7 +216,6 @@ def auto_checking(detect_result, collect_detect):
 
     if motorbike_num > helmet_num:
         check_result[13] = motorbike_num - helmet_num
-
     return check_result
 
 # 이미지 확인. 통과. pass
@@ -184,8 +232,8 @@ def collect_image(request, uuid):
         target_image.check_status = 1
         target_image.check_user = request.user
         target_image.check_result = auto_checking(target_image.detect_result, True),
-        target_image.check_comment = '통과?'
-        target_image.check_date = datetime.datetime.now()
+        target_image.check_comment = '통과'
+        target_image.check_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         target_image.save()
         return redirect('image:image_detail', uuid=uuid)
         # return HttpResponse(status=200)
@@ -219,7 +267,8 @@ def check_image(request, uuid):
             else:
                 target_image.check_comment = target_image.check_comment
             # check_date가 현재 시간으로 바뀌어야 합니다.
-            target_image.check_date = datetime.datetime.now()
+            # asio/seoul 기준의 시간대로 timezone 설정
+            target_image.check_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
             target_image.save()
             return redirect('image:image_detail', uuid=uuid)
         # 이미지 상세보기
