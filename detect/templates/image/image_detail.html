@@ -50,11 +50,12 @@
                             기타 사항: {{ image_contents.uploader_comment }}
                         </p>
                     </div>
-                    {% for status in violation_status %}
                     <span>
-                        예측한 위반 사항: {{status}}
+                        예측한 위반 사항
+                        {% for status in violation_status %}
+                        <li>{{status}}</li> 
+                        {% endfor %}
                     </span>
-                    {% endfor %}
                 {% endif %}
                 <div class="check_info" style="margin-top: 1rem;">
                     확인 상태:

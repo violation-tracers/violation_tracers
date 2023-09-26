@@ -10,7 +10,7 @@ def y_detect(image, image_path):
     # 기본 제공되는 yolov5s 모델 사용
     # model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     # custom 모델 사용
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results62.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results64.pt')
 
     # # 모델 조정 옵션
     model.conf = 0.2 # NMS confidence threshold
