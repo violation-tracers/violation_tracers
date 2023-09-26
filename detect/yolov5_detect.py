@@ -10,10 +10,10 @@ def y_detect(image, image_path):
     # 기본 제공되는 yolov5s 모델 사용
     # model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
     # custom 모델 사용
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results19.pt')
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='model_pt/results62.pt')
 
     # # 모델 조정 옵션
-    model.conf = 0.4 # NMS confidence threshold
+    model.conf = 0.2 # NMS confidence threshold
     # iou = 0.45  # NMS IoU threshold
     # agnostic = False  # NMS class-agnostic
     # multi_label = False  # NMS multiple labels per box
@@ -22,7 +22,7 @@ def y_detect(image, image_path):
     # amp = False  # Automatic Mixed Precision (AMP) inference
 
     # 이미지 사이즈를 변경하면서 모델을 이용해 디텍팅
-    result = model(image, size=416)
+    result = model(image, size=528)
 
     # 디텍팅된 이미지의 라벨중 마지막 name 만 반환
     # result_detecting_list = result.pandas().xyxy[0]['name'].tolist()
