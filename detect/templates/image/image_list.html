@@ -25,8 +25,8 @@
 </div> {% endcomment %}
 <div class="row g-4 d-flex justify-content-center">
     {% for image_contents in image_contents_list %}
-    <div class="col-md-auto">
-        <div class="imageItem" data-status="{{ image_contents.check_status}}">
+    <div class="col-md-auto image_card" data-status="{{ image_contents.check_status}}" >
+        <div class="imageItem" >
             <a href="{% url "image:image_detail" image_contents.image_uuid %}">
                 <div class="card">
                 {% if user.groups.all.0.name != 'reporter' %}
@@ -38,10 +38,8 @@
                         <div class="check_status">
                             {% if image_contents.check_status == 0 %}
                             미확인 ❌
-                            {% elif image_contents.check_status == 1 %}
-                            확인 ✅
                             {% else %}
-                            보류 🤔
+                            확인 ✅
                             {% endif %}
                         </div>
                         <div>
@@ -58,7 +56,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const filterButton = document.getElementById("filterButton");
-            const imageItems = document.querySelectorAll(".imageItem");
+            const imageItems = document.querySelectorAll(".image_card");
 
             filterButton.addEventListener("click", function() {
                 // Toggle the visibility of images based on their check_status
@@ -67,7 +65,7 @@
 
                 imageItems.forEach(function(item) {
                     const status = item.getAttribute("data-status");
-                    if (status == 1) {
+                    if (status != 0) {
                         // not list-item. i just want to display it without list.
                         item.style.display = newStatus === "true" ? "none" : "inline-block";
                     }
