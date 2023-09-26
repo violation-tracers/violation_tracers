@@ -79,6 +79,18 @@ def image_detail(request, uuid):
     # uuid to string and replace '-' to ''
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
+
+    image_list_length = ImageContents.objects.all().count()
+    current_index = image.id
+
+    pre_image = None
+    next_image = None
+
+    if current_index > 1:
+        pre_image = ImageContents.objects.filter(id__lt=image.id).order_by('-id').first()
+    if current_index < image_list_length:
+        next_image = ImageContents.objects.filter(id__gt=image.id).order_by('id').first()
+
     violation_status = model_output.chaser(image.detect_result)
     if image.check_result:
         check_result = eval(image.check_result)
@@ -110,11 +122,15 @@ def image_detail(request, uuid):
 
         return render(request, 'image/image_detail.html', {
             'image_contents': image,
+            'pre_image_uuid': pre_image.image_uuid if pre_image else None,
+            'next_image_uuid': next_image.image_uuid if next_image else None,
             'violation_status': violation_status,
             'check_violation_status': check_result_list,
         })
     return render(request, 'image/image_detail.html', {
         'image_contents': image,
+        'pre_image_uuid': pre_image.image_uuid if pre_image else None,
+        'next_image_uuid': next_image.image_uuid if next_image else None,
         'violation_status': violation_status,
     })
 
