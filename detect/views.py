@@ -94,7 +94,8 @@ def image_detail(request, uuid):
     violation_status = model_output.chaser(image.detect_result)
     if image.check_result:
         check_result = eval(image.check_result)
-
+        if type(check_result) == tuple:
+            check_result = check_result[0]
         check_result_list = []
         for status, num in check_result.items():
             if num:
