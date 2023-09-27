@@ -4,6 +4,8 @@ import base64
 from django.shortcuts import render
 from detect.models import ImageContents
 import ast
+
+# 한글지원
 import platform
 from matplotlib import font_manager, rc
 plt.rcParams['axes.unicode_minus'] = False
@@ -21,16 +23,12 @@ def create_bar_chart(data_dict, filename, xlabel='', ylabel='', title='', x_name
     keys = list(data_dict.keys())
     values = list(data_dict.values())
 
-    
-
+    plt.figure(figsize=(12, 6)) 
     plt.bar(keys, values)
-
-    for i, v in enumerate(values):
-        plt.text(i, v + 0.5, str(v), ha='center', va='bottom', fontsize=12)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
-    plt.xticks(keys, x_names, rotation=45)
+    plt.xticks(keys, x_names)
 
     # 그래프를 이미지 파일로 저장
     img_buffer = BytesIO()
@@ -62,7 +60,7 @@ def visualize_data(request):
                 data_dict2[str(key)] += value
 
     # 그래프 생성 및 이미지로 저장
-    img1 = create_bar_chart(data_dict1, 'graph1.png', xlabel='Violation Type', ylabel='Number', x_names=['오토바이 흰색선, 정지선 위반 혹은 보행자 안전 위협', '오토바이 황색선, 불법 주정차 혹은 중앙선 침범','오토바이 보행자 도로 침범','오토바이 헬맷 미착용'])
-    img2 = create_bar_chart(data_dict2, 'graph2.png', xlabel='Violation Type', ylabel='Number', x_names=['자동차 흰색선, 정지선 위반 혹은 보행자 안전 위협', '자동차 황색선, 불법 주정차 혹은 중앙선 침범', '자동차 보행자 도로 침범'])
+    img1 = create_bar_chart(data_dict1, 'graph1.png', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범','보행자 도로 침범','오토바이 헬맷 미착용'])
+    img2 = create_bar_chart(data_dict2, 'graph2.png', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범', '보행자 도로 침범'])
 
     return render(request, 'visualization/bar_visualization.html', {'img1': img1, 'img2': img2})
