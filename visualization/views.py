@@ -4,7 +4,17 @@ import base64
 from django.shortcuts import render
 from detect.models import ImageContents
 import ast
-
+import platform
+from matplotlib import font_manager, rc
+plt.rcParams['axes.unicode_minus'] = False
+if platform.system() == 'Darwin':  # 맥OS
+    rc('font', family='AppleGothic')
+elif platform.system() == 'Windows':  # 윈도우
+    path = "c:/Windows/Fonts/malgun.ttf"
+    font_name = font_manager.FontProperties(fname=path).get_name()
+    rc('font', family=font_name)
+else:
+    print('Unknown system...  sorry~~~')
 
 def create_bar_chart(data_dict, filename, xlabel='', ylabel='', title='', x_names=[]):
 
