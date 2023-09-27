@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'detect',
     'accounts',
+    'visualization'
 ]
 
 MIDDLEWARE = [
