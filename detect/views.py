@@ -232,7 +232,7 @@ def collect_image(request, uuid):
         # check_status가 1(예측 결과 적합으로 자동 확인)
         target_image.check_status = 1
         target_image.check_user = request.user
-        target_image.check_result = auto_checking(target_image.detect_result, True),
+        target_image.check_result = auto_checking(target_image.detect_result, True)
         target_image.check_comment = '통과'
         target_image.check_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         target_image.save()
