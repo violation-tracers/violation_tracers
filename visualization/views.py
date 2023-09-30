@@ -65,8 +65,8 @@ def visualize_data(request):
                 data_dict2[str(key)] += value
 
     # 그래프 생성 및 이미지로 저장
-    img1 = create_bar_chart(data_dict1, 'graph1.png', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범','보행자 도로 침범','오토바이 헬맷 미착용'])
-    img2 = create_bar_chart(data_dict2, 'graph2.png', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범', '보행자 도로 침범'])
+    img1 = create_bar_chart(data_dict1, 'graph1.png', title='Motorcycle', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범','보행자 도로 침범','오토바이 헬맷 미착용'])
+    img2 = create_bar_chart(data_dict2, 'graph2.png', title='Car', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범', '보행자 도로 침범'])
 
     return render(request, 'visualization/bar_visualization.html', {'img1': img1, 'img2': img2})
 
