@@ -15,10 +15,21 @@
         </div>
         {% comment %} test 중 {% endcomment %}
         <div class="col-6">
-            <button id='collect_detect' style="display: block; margin-bottom: 1rem;" class="btn btn-outline-dark">검출이 잘 되었습니다.</button>
+            <div class="detected_list">
+                <h4>예측한 위반 사항</h4>
+                <ul>
+                    {% for status in violation_status %}
+                        <li>{{status}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <span>예측한 사항들이 정확한가요?</span>
+                <button id='collect_detect' style="display: block; margin-bottom: 1rem;" class="btn btn-outline-dark">예측이 잘 되었습니다.</button>
+            </div>
             <hr>
             <select id="selectField" style="margin-bottom: 1rem;">
-            {% comment %} select head {% endcomment %}
+                {% comment %} select head {% endcomment %}
                 <option value="" selected disabled hidden>위반 사항을 선택하세요</option>
                 <option value="8">오토바이 정지선 위반, 보행자 안전 위협</option>
                 <option value="9">오토바이 불법 주정차 혹은 중앙선 침범</option>
@@ -28,12 +39,17 @@
                 <option value="6">자동차 불법 주정차 혹은 중앙선 침범</option>
                 <option value="12">자동차 보행자 도로 침범</option>
             </select>
-
+            
             <div id="inputContainer">
                 <label for="check_comment" style="margin-bottom: 1rem;">기타 검토 사항</label>
                 <input type='text' id='check_comment' name='check_comment' placeholder='ex. 보류 사유'>
             </div>
-            <button id="submitButton" style="display: none; margin-top: 1rem;" class="btn btn-outline-dark">Submit</button>
+            <button id="submitButton" style="display: none; margin-top: 1rem;" class="btn btn-outline-dark">검토 내용 제출</button>
+            <hr>
+            <div>
+                <span>위반 사항이 없나요?</span>
+                <button id='nothing_violation' style="display: block; margin-bottom: 1rem;" class="btn btn-warning">위반 사항이 없습니다.</button>
+            </div>
         </div>
     </div>
 
@@ -104,17 +120,14 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    // Handle the server's response here
-                    console.log("Server response: " + response);
-                    window.location.href = `/image/image_detail/${uuid}/`;
+            .then(function (response) {
+                window.location.href = `/image/image_detail/${uuid}/`;
 
-                })
-                .catch(function (error) {
-                    // Handle any errors here
-                    console.error("Error: " + error);
-                    window.location.href = `/image/list/`;
-                });
+            })
+            .catch(function (error) {
+                console.error("Error: " + error);
+                window.location.href = `/image/list/`;
+            });
         }
         
         // 이미지가 적절할 때 pass
@@ -125,6 +138,26 @@
                     "Content-Type": "application/json",
                     "X-CSRFToken": "{{ csrf_token }}",
                 },
+            })
+            .then(res => {
+                window.location.href = `/image/image_detail/${uuid}/`;
+            })
+            .catch(error => {
+                console.error("Error: " + error);
+                window.location.href = `/image/list/`;
+            })
+        }
+
+        // 위반사항이 없을 때
+        function nothingViolation(){
+            data = { '8':0, '9':0, '10':0, '13':0, '5':0, '6':0, '12':0, 'check_comment':null}
+            fetch(`/image/check/${uuid}/`, {
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify(data)
             })
             .then(res => {
                 console.log("success")
@@ -139,6 +172,8 @@
         document.getElementById("submitButton").addEventListener("click", sendDataToServer);
         
         document.getElementById("collect_detect").addEventListener("click", collectDetect);
+        document.getElementById("nothing_violation").addEventListener("click", nothingViolation);
+
     </script>
     </div>
 {% endblock content %}

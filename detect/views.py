@@ -195,28 +195,28 @@ def auto_checking(detect_result, collect_detect):
             else:
                 check_result[int(detect_result)] = detect_result_list[detect_result]
 
-    if collect_detect:
-        # 오토바이 수
-        motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
-        # 헬멧 수
-        helmet_num = detect_result_list.count(11)
-    else:
-        motorbike_num = 0
-        helmet_num = 0
-        if "8" in detect_result_list.keys():
-            motorbike_num += detect_result_list["8"]
-        if "9" in detect_result_list.keys():
-            motorbike_num += detect_result_list["9"]
-        if "10" in detect_result_list.keys():
-            motorbike_num += detect_result_list["10"]
-        if "7" in detect_result_list.keys():
-            motorbike_num += detect_result_list["7"]
+    # if collect_detect:
+    #     # 오토바이 수
+    #     motorbike_num = detect_result_list.count(8) + detect_result_list.count(9) + detect_result_list.count(10) + detect_result_list.count(7)
+    #     # 헬멧 수
+    #     helmet_num = detect_result_list.count(11)
+    # else:
+    #     motorbike_num = 0
+    #     helmet_num = 0
+    #     if "8" in detect_result_list.keys():
+    #         motorbike_num += detect_result_list["8"]
+    #     if "9" in detect_result_list.keys():
+    #         motorbike_num += detect_result_list["9"]
+    #     if "10" in detect_result_list.keys():
+    #         motorbike_num += detect_result_list["10"]
+    #     if "7" in detect_result_list.keys():
+    #         motorbike_num += detect_result_list["7"]
         
-        if "11" in detect_result_list.keys():
-            helmet_num += detect_result_list["11"]
+    #     if "11" in detect_result_list.keys():
+    #         helmet_num += detect_result_list["11"]
 
-    if motorbike_num > helmet_num:
-        check_result[13] = motorbike_num - helmet_num
+    # if motorbike_num > helmet_num:
+    #     check_result[13] = motorbike_num - helmet_num
     return check_result
 
 # 이미지 확인. 통과. pass
@@ -245,19 +245,20 @@ def collect_image(request, uuid):
 
 # 이미지 확인 기능. 관리자만 가능
 def check_image(request, uuid):
-    
+
     # uuid to string and replace '-' to ''
     target_uuid = str(uuid).replace('-', '')
+    target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
 
     # superuser인지 확인
     # if request.user.is_superuser:
     if not request.user.groups.filter(name='reporter').exists():
-        target_image = get_object_or_404(ImageContents, image_uuid=target_uuid)
         # 이미지 체크
         if request.method == 'POST' and request.body:
 
             data = json.loads(request.body.decode('utf-8'))
             check_comment = data.pop('check_comment')
+            print(data, check_comment)
 
             # check_status가 2(예측 결과 부적합으로 관리자가 결과 확인)
             target_image.check_status = 2
@@ -274,7 +275,11 @@ def check_image(request, uuid):
             return redirect('image:image_detail', uuid=uuid)
         # 이미지 상세보기
         else:
-            return render(request, 'image/check_violation.html', {'image_contents': target_image})
+            violation_status = model_output.chaser(target_image.detect_result)
+            return render(request, 'image/check_violation.html', {
+                'image_contents': target_image,
+                'violation_status': violation_status,
+            })
     else:
         # 관리자가 아니라면 home으로 이동
         return redirect('accounts:main')
