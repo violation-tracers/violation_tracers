@@ -21,12 +21,13 @@
         </div>
     </div>
 </div>
-<div style="margin-top: 2rem; margin-bottom: 2rem;">
-    <h2>
-        Upload Image list
-        <button id="filterButton" data-filtered="false" Class="btn btn-outline-dark">확인 안 한 이미지</button>
-    </h2>
+<div style="width: 90%; margin: 0 auto; text-align: right;">
+    {% if user.groups.all.0.name == 'reporter' %}
+        <a href="{% url "image:upload_image" %}" class="btn btn-outline-dark">이미지 업로드</a>
+    {% endif %}
+    <button id="filterButton" data-filtered="false" Class="btn btn-outline-dark">확인 안 한 이미지</button>
 </div>
+<br>
 <div style="width: 90%; margin: 0 auto;">
 {% comment %} <div style="margin-bottom: 2rem;">
 </div> {% endcomment %}

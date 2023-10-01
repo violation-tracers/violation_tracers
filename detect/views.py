@@ -76,7 +76,10 @@ def image_contents_list(request):
 
 # 이미지 상세보기
 def image_detail(request, uuid):
-    # uuid to string and replace '-' to ''
+
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+
     uuid = str(uuid).replace('-', '')
     image = get_object_or_404(ImageContents, image_uuid=uuid)
 
@@ -221,6 +224,10 @@ def auto_checking(detect_result, collect_detect):
 
 # 이미지 확인. 통과. pass
 def collect_image(request, uuid):
+
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+
     target_uuid = str(uuid).replace('-', '')
     # 관리자 여부 확인
     if not request.user.groups.filter(name='reporter').exists():
@@ -245,6 +252,9 @@ def collect_image(request, uuid):
 
 # 이미지 확인 기능. 관리자만 가능
 def check_image(request, uuid):
+
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
 
     # uuid to string and replace '-' to ''
     target_uuid = str(uuid).replace('-', '')
@@ -283,5 +293,3 @@ def check_image(request, uuid):
     else:
         # 관리자가 아니라면 home으로 이동
         return redirect('accounts:main')
-
-# video streaming 중 실시간 detecting
