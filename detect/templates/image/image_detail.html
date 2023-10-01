@@ -34,7 +34,6 @@
         </div>
     </div>
 </div>
-    <h2 style="margin-top : 2rem; margin-bottom: 2rem;">Image Detail</h2>
     <div class="row">
         <div class='uploaded-image col-lg-6' >
             {% if user.groups.all.0.name != 'reporter' %}
@@ -47,15 +46,20 @@
             <div class="image_info_text">
                 {% if image_contents.check_status != 1 %}
                     <div class="user_info" style="margin-bottom: 1rem;" >
-                        <p>
-                            업로드 유저: {{ image_contents.upload_user }}
-                        </p>
-                        <p>
-                            업로드 날짜: {{ image_contents.create_at }}
-                        </p>
-                        <p>
-                            기타 사항: {{ image_contents.uploader_comment }}
-                        </p>
+                        <div class="image_info" style="display:flex; justify-content:space-between">
+                            <p>
+                                신고 날짜: <span id="uploadDate">{{ image_contents.create_at }}</span>
+                            </p>
+                            <p>
+                                신고자: {{ image_contents.upload_user }}
+                            </p>
+                        </div>
+                        <hr>
+                        {% if image_contents.uploader_comment %}
+                            <p>
+                                기타 사항: {{ image_contents.uploader_comment }}
+                            </p>
+                        {% endif %}
                     </div>
                 {% endif %}
                 <span>
@@ -64,67 +68,82 @@
                         <li>{{status}}</li>
                     {% endfor %}
                 </span>
+                <hr>
                 <div class="check_info" style="margin-top: 1rem;">
-                    확인 상태:
                     {% if image_contents.check_status == 0 %}
-                        미확인 ❌
+                        <h4>
+                        확인하지 않은 이미지입니다
+                        </h4>
                         {% if user.groups.all.0.name != 'reporter' %}
                             <div class='go_checking' style="margin-top: 1rem;">
                                 <p>
                                     예측 결과가 정확한가요?
                                     <a href="{% url 'image:pass_image' image_contents.image_uuid %}">
-                                        <button class='collect btn btn-outline-dark btn-sm'>적합</button>
+                                        <button class='collect btn btn-primary btn-sm'>적합</button>
                                     </a>
                                 </p>
                                 <p>
                                     결과를 수정해야하나요?
                                     <a href="{% url 'image:check_image' image_contents.image_uuid %}">
-                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
+                                        <button class='check btn btn-warning btn-sm'>검토</button>
                                     </a>
                                 </p>
                             </div>
                         {% endif %}
                     {% elif image_contents.check_status == 1 %}
-                        확인 ✅ - 예측결과 적합
-                        {% if user.groups.all.0.name != 'reporter' %}
-                            <div class='go_checking' style="margin-top: 1rem;">
-                                <p>
-                                    결과를 수정해야하나요?
-                                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">
-                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
-                                    </a>
-                                </p>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        확인 ✅ - 관리자 수정
-                        {% if user.groups.all.0.name != 'reporter' %}
+                        <div class="check_container" style="display:flex; justify-content:space-between">
+                            <h4>
+                                확인 ✅ - 예측결과 적합
+                            </h4>
+                            {% if user.groups.all.0.name != 'reporter' %}
                             <div class='go_checking'>
                                 <p>
                                     결과를 수정해야하나요?
                                     <a href="{% url 'image:check_image' image_contents.image_uuid %}">
-                                        <button class='check btn btn-outline-dark btn-sm'>검토</button>
+                                        <button class='check btn btn-warning btn-sm'>검토</button>
                                     </a>
                                 </p>
                             </div>
-                        {% endif %}
-                        <span>
-                            관리자가 검토한 위반 사항
-                            {% for status in check_violation_status %}
-                                <li>{{status}}</li>
-                            {% endfor %}
-                        </span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="check_container" style="display:flex; justify-content:space-between">
+                            <h4>
+                                확인 ✅ - 관리자 수정
+                            </h4>
+                            {% if user.groups.all.0.name != 'reporter' %}
+                            <div class='go_checking'>
+                                <p>
+                                    결과를 수정해야하나요?
+                                    <a href="{% url 'image:check_image' image_contents.image_uuid %}">
+                                        <button class='check btn btn-warning btn-sm'>검토</button>
+                                    </a>
+                                </p>
+                            </div>
+                            {% endif %}
+                        </div>
+                            <span>
+                                {% if check_violation_status %}
+                                관리자가 검토한 위반 사항
+                                    {% for status in check_violation_status %}
+                                        <li>{{status}}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </span>
                     {% endif %}
+                    <br>
                     {% if image_contents.check_user %}
-                    <p>
-                        확인자: {{ image_contents.check_user }}
-                    </p>
-                    <p>
-                        확인날짜: {{ image_contents.check_date }}
-                    </p>
-                    <p>
-                        확인 코멘트: {{ image_contents.check_comment }}
-                    </p>
+                        <p>
+                            확인자: {{ image_contents.check_user }}
+                        </p>
+                        <p>
+                            확인날짜: {{ image_contents.check_date }}
+                        </p>
+                    {% if image_contents.check_comment %}
+                        <p>
+                            확인 코멘트: {{ image_contents.check_comment }}
+                        </p>
+                    {% endif %}
                     {% endif %}
                 </div>
             </div>
