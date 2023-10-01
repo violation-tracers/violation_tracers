@@ -44,24 +44,22 @@
         </div>
         <div class="image_info card col-lg-6">
             <div class="image_info_text">
-                {% if image_contents.check_status != 1 %}
-                    <div class="user_info" style="margin-bottom: 1rem;" >
-                        <div class="image_info" style="display:flex; justify-content:space-between">
-                            <p>
-                                신고 날짜: <span id="uploadDate">{{ image_contents.create_at }}</span>
-                            </p>
-                            <p>
-                                신고자: {{ image_contents.upload_user }}
-                            </p>
-                        </div>
-                        <hr>
-                        {% if image_contents.uploader_comment %}
-                            <p>
-                                기타 사항: {{ image_contents.uploader_comment }}
-                            </p>
-                        {% endif %}
+                <div class="user_info" style="margin-bottom: 1rem;" >
+                    <div class="image_info" style="display:flex; justify-content:space-between">
+                        <p>
+                            신고 날짜: <span id="uploadDate">{{ image_contents.create_at }}</span>
+                        </p>
+                        <p>
+                            신고자: {{ image_contents.upload_user }}
+                        </p>
                     </div>
-                {% endif %}
+                    <hr>
+                    {% if image_contents.uploader_comment %}
+                        <p>
+                            기타 사항: {{ image_contents.uploader_comment }}
+                        </p>
+                    {% endif %}
+                </div>
                 <span>
                     예측한 위반 사항
                     {% for status in violation_status %}
@@ -72,7 +70,7 @@
                 <div class="check_info" style="margin-top: 1rem;">
                     {% if image_contents.check_status == 0 %}
                         <h4>
-                        확인하지 않은 이미지입니다
+                        관리자가 아직 확인하지 않았습니다
                         </h4>
                         {% if user.groups.all.0.name != 'reporter' %}
                             <div class='go_checking' style="margin-top: 1rem;">
