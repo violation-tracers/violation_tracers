@@ -1,18 +1,22 @@
 <!-- select_date_range.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Select Date Range</title>
-</head>
-<body>
-    <h1>Select Date Range</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="start_date" name="start_date" required>
-        <label for="end_date">End Date:</label>
-        <input type="date" id="end_date" name="end_date" required>
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% block content %}
+<div class="container-fluid bg-primary p-5 hero-header mb-5 mt-5">
+    <div class="row py-5">
+        <div class="col-12 text-center">
+            <h1 class="display-1 text-white animated zoomIn">Visualization Select</h1>
+        </div>
+    </div>
+</div>
+<h2 style="margin-top : 2rem; margin-bottom: 2rem;">Select Date Range</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" required>
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" required>
+    <button type="submit" class="btn btn-outline-dark">Search</button>
+</form>
+
+{% endblock content %}
