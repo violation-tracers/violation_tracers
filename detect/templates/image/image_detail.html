@@ -54,7 +54,7 @@
                 <div class="user_info" style="margin-bottom: 1rem;" >
                     <div class="image_info" style="display:flex; justify-content:space-between">
                         <p>
-                            신고 날짜: <span id="uploadDate">{{ image_contents.create_at }}</span>
+                            신고 날짜: <span id="uploadDate">{{image_contents.create_at |date:"Y년 n월 j일 G:i" }}</span>
                         </p>
                         <p>
                             신고자: {{ image_contents.upload_user }}
@@ -144,7 +144,7 @@
                             확인자: {{ image_contents.check_user }}
                         </p>
                         <p>
-                            확인날짜: {{ image_contents.check_date }}
+                            확인날짜: {{image_contents.check_date |date:"Y년 n월 j일 G:i" }}
                         </p>
                     {% if image_contents.check_comment %}
                         <p>
