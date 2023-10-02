@@ -66,11 +66,11 @@ def image_contents_list(request):
     
     # if request.user.is_superuser:
     if not request.user.groups.filter(name='reporter').exists():
-        target_images = ImageContents.objects.all()
+        target_images = ImageContents.objects.all().order_by('-id')
     
     # 일반 유저는 자신의 이미지만 볼 수 있음
     else:
-        target_images = ImageContents.objects.filter(upload_user=request.user)
+        target_images = ImageContents.objects.filter(upload_user=request.user).order_by('-id')
     
     return render(request, 'image/image_list.html', {'image_contents_list': target_images})
 
