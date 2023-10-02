@@ -16,6 +16,7 @@
         height: auto;
         display: block;
         margin: 0 auto;
+        align-items: center;
     }
 
     .image_info_text {
@@ -25,6 +26,12 @@
         height: auto;
         display: block;
         margin: 0 auto;
+    }
+
+    .check_container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>
 <div class="container-fluid bg-primary p-5 hero-header mb-5 mt-5">
@@ -61,7 +68,9 @@
                     {% endif %}
                 </div>
                 <span>
-                    예측한 위반 사항
+                    <h4>
+                        예측한 위반 사항
+                    </h4>
                     {% for status in violation_status %}
                         <li>{{status}}</li>
                     {% endfor %}
@@ -77,7 +86,7 @@
                                 <p>
                                     예측 결과가 정확한가요?
                                     <a href="{% url 'image:pass_image' image_contents.image_uuid %}">
-                                        <button class='collect btn btn-primary btn-sm'>적합</button>
+                                        <button class='collect btn btn-primary btn-sm' onclick="return confirm('적합한가요?')">적합</button>
                                     </a>
                                 </p>
                                 <p>
