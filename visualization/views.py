@@ -7,6 +7,7 @@ from matplotlib import font_manager, rc
 from io import BytesIO
 import base64
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from django.utils.timezone import make_aware
 
 
@@ -34,6 +35,9 @@ def create_bar_chart(data_dict, filename, xlabel='', ylabel='', title='', x_name
     plt.ylabel(ylabel)
     plt.title(title, fontsize=25)
     plt.xticks(keys, x_names, fontsize=16)
+
+    y_format = ticker.MaxNLocator(integer=True)
+    plt.gca().yaxis.set_major_locator(y_format)
 
     # 그래프를 이미지 파일로 저장
     img_buffer = BytesIO()
