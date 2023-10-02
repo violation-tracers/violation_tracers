@@ -11,19 +11,19 @@
 <h2 style="margin-top : 2rem; margin-bottom: 2rem;">Visualization</h2>
 <form method="post" action="/visualization/visualize_data_by_date/">
     {% csrf_token %}
-    <label for="start_date">Start Date:</label>
+    <label for="start_date">Start Date</label>
     <input type="date" id="start_date" name="start_date" required>
-    <label for="end_date">End Date:</label>
+    <label for="end_date">End Date</label>
     <input type="date" id="end_date" name="end_date" required>
     <button type="submit" class="btn btn-outline-dark btn-sm">Search</button>
 </form>
 <div class="row">
     <div class="col col-lg-6">
-        <img src="data:image/png;base64,{{ img1 }}" alt="Graph 1" style="width: 33rem; height: 37rem;">
+        <img src="data:image/png;base64,{{ img1 }}" alt="Graph 1" style="width: 36rem; height: 36rem;">
     </div>
     <div class="col col-lg-6">
         
-        <img src="data:image/png;base64,{{ img2 }}" alt="Graph 2" style="width: 33rem; height: 37rem;">
+        <img src="data:image/png;base64,{{ img2 }}" alt="Graph 2" style="width: 36rem; height: 36rem;">
     </div>
 </div>
 {% endblock content %}
