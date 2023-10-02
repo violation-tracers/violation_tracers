@@ -28,11 +28,11 @@ def create_bar_chart(data_dict, filename, xlabel='', ylabel='', title='', x_name
     keys = list(data_dict.keys())
     values = list(data_dict.values())
 
-    plt.figure(figsize=(12, 6)) 
+    plt.figure(figsize=(12, 6))
     plt.bar(keys, values)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.title(title)
+    plt.title(title, fontsize=15)
     plt.xticks(keys, x_names)
 
     # 그래프를 이미지 파일로 저장
@@ -69,8 +69,8 @@ def visualize_data(request):
             pass
 
     # 그래프 생성 및 이미지로 저장
-    img1 = create_bar_chart(data_dict1, 'graph1.png', title='Motorcycle', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범','보행자 도로 침범','오토바이 헬맷 미착용'])
-    img2 = create_bar_chart(data_dict2, 'graph2.png', title='Car', xlabel='Violation Type', ylabel='Number', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범', '보행자 도로 침범'])
+    img1 = create_bar_chart(data_dict1, 'graph1.png', title='Motorcycle', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범','보행자 도로 침범','오토바이 헬맷 미착용'])
+    img2 = create_bar_chart(data_dict2, 'graph2.png', title='Car', x_names=['정지선 위반, 보행자 안전 위협', '불법 주정차, 중앙선 침범', '보행자 도로 침범'])
 
     return render(request, 'visualization/bar_visualization.html', {'img1': img1, 'img2': img2})
 

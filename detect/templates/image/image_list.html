@@ -17,10 +17,11 @@
 <div class="container-fluid bg-primary p-5 hero-header mb-5 mt-5">
     <div class="row py-5">
         <div class="col-12 text-center">
-            <h1 class="display-1 text-white animated zoomIn"> Image List</h1>
+            <h1 class="display-1 text-white animated zoomIn">Image List</h1>
         </div>
     </div>
 </div>
+<h2 style="margin-top : 2rem; margin-bottom: 2rem;">Image List</h2>
 <div style="width: 90%; margin: 0 auto; text-align: right;">
     {% if user.groups.all.0.name == 'reporter' %}
         <a href="{% url "image:upload_image" %}" class="btn btn-outline-dark">이미지 업로드</a>
@@ -29,8 +30,6 @@
 </div>
 <br>
 <div style="width: 90%; margin: 0 auto;">
-{% comment %} <div style="margin-bottom: 2rem;">
-</div> {% endcomment %}
 <div class="row g-4 d-flex justify-content-center">
     {% for image_contents in image_contents_list %}
     <div class="col-md-auto image_card" data-status="{{ image_contents.check_status}}" >

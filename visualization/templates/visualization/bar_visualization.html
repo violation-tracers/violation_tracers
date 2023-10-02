@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load bootstrap5 %}
 {% block content %}
+<style>
+    input[type="date"] {
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        height: 30px;
+    }
+</style>
 <div class="container-fluid bg-primary p-5 hero-header mb-5 mt-5">
     <div class="row py-5">
         <div class="col-12 text-center">
@@ -11,19 +19,19 @@
 <h2 style="margin-top : 2rem; margin-bottom: 2rem;">Visualization</h2>
 <form method="post" action="/visualization/visualize_data_by_date/">
     {% csrf_token %}
-    <label for="start_date">Start Date:</label>
+    <label for="start_date">Start Date </label>
     <input type="date" id="start_date" name="start_date" required>
-    <label for="end_date">End Date:</label>
+    &nbsp
+    <label for="end_date">End Date </label>
     <input type="date" id="end_date" name="end_date" required>
     <button type="submit" class="btn btn-outline-dark btn-sm">Search</button>
 </form>
 <div class="row">
     <div class="col col-lg-6">
-        <img src="data:image/png;base64,{{ img1 }}" alt="Graph 1" style="width: 33rem; height: 37rem;">
+        <img src="data:image/png;base64,{{ img1 }}" alt="Graph 1" style="width: 40rem; height: 30rem;">
     </div>
     <div class="col col-lg-6">
-        
-        <img src="data:image/png;base64,{{ img2 }}" alt="Graph 2" style="width: 33rem; height: 37rem;">
+        <img src="data:image/png;base64,{{ img2 }}" alt="Graph 2" style="width: 40rem; height: 30rem;">
     </div>
 </div>
 {% endblock content %}
