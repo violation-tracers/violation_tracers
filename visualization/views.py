@@ -15,11 +15,16 @@ from django.utils.timezone import make_aware
 import platform
 from matplotlib import font_manager, rc
 plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['font.family'] = 'NanumGothic'
 if platform.system() == 'Darwin':  # 맥OS
     rc('font', family='AppleGothic')
 elif platform.system() == 'Windows':  # 윈도우
-    path = "c:/Windows/Fonts/malgun.ttf"
-    font_name = font_manager.FontProperties(fname=path).get_name()
+    # local 한글 폰트
+    # path = "c:/Windows/Fonts/malgun.ttf"
+    # AWS 서버 한글 폰트 지원
+    path2 = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+    # font_name = font_manager.FontProperties(fname=path).get_name()
+    font_name = font_manager.FontProperties(fname=path2).get_name()
     rc('font', family=font_name)
 else:
     print('Unknown system...  sorry~~~')
