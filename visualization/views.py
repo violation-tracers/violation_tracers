@@ -20,11 +20,11 @@ if platform.system() == 'Darwin':  # 맥OS
     rc('font', family='AppleGothic')
 elif platform.system() == 'Windows':  # 윈도우
     # local 한글 폰트
-    # path = "c:/Windows/Fonts/malgun.ttf"
+    path = "c:/Windows/Fonts/malgun.ttf"
+    font_name = font_manager.FontProperties(fname=path).get_name()
     # AWS 서버 한글 폰트 지원
-    path2 = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
-    # font_name = font_manager.FontProperties(fname=path).get_name()
-    font_name = font_manager.FontProperties(fname=path2).get_name()
+    # path2 = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+    # font_name = font_manager.FontProperties(fname=path2).get_name()
     rc('font', family=font_name)
 else:
     print('Unknown system...  sorry~~~')
